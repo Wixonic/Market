@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="WixMarket:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/WixMarket_jar</output-path>
+    <root id="archive" name="WixMarket.jar">
+      <element id="module-output" name="WixMarket" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/spigot-api-1.20.1-R0.1-66.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,47 @@
+main: fr.wixonic.market.Main
+api-version: "1.20"
+version: 1.0.0
+
+author: Wixonic
+name: WixMarket
+description: Adds a powerful market system in your Minecraft server
+website: "https://github.com/Wixonic/Market"
+
+commands:
+    market:
+        aliases: mk
+        description: Shows the market interface
+        usage: /<command>
+        permission: market.access
+        permission-message: You do not have permission to use this command.
+
+permissions:
+    market.access:
+        description: Market access permissions
+        default: true
+
+        children:
+            market.buy: true
+            market.sell: true
+
+    market.buy:
+        description: Allows to buy in the market
+
+        children:
+            market.buy.requests: true
+
+    market.sell:
+        description: Allows to sell in the market
+
+        children:
+            market.sell.requests: true
+
+    market.buy.requests:
+        description: Allows to create buying requests in the market
+
+    market.sell.requests:
+        description: Allows to create selling requests in the market
+
+    market.*:
+        description: Wildcard permission
+        default: op
