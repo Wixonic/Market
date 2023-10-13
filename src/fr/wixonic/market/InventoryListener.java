@@ -9,11 +9,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 
 public class InventoryListener implements Listener {
-	public Market market;
-
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
-		if (Arrays.stream(market.inventoryTitles).anyMatch(s -> s.equals(e.getView().getTitle()))) {
+		if (Arrays.stream(Main.market.inventoryTitles).anyMatch(s -> s.equals(e.getView().getTitle()))) {
 			ItemStack itemStack = e.getCurrentItem();
 
 			if (itemStack == null || itemStack.getType().isAir()) return;
@@ -23,17 +21,18 @@ public class InventoryListener implements Listener {
 			} else if (itemStack.getItemMeta().hasCustomModelData()) {
 				switch (itemStack.getItemMeta().getCustomModelData()) {
 					case 0:
-						e.getWhoClicked().openInventory(market.itemListInventory);
+						Main.market.updateItemList("All");
+						e.getWhoClicked().openInventory(Main.market.itemListInventory);
 						break;
 
 					case 1:
-						e.getWhoClicked().openInventory(market.itemInfoInventory);
-						market.updateItemList("All");
+						Main.market.updateItemList("Others");
+						e.getWhoClicked().openInventory(Main.market.itemListInventory);
 						break;
 
-					case 1:
-						e.getWhoClicked().openInventory(market.itemInfoInventory);
-						market.updateItemList("Others");
+					case 2:
+						Main.market.updateItemList("Others");
+						e.getWhoClicked().openInventory(Main.market.itemListInventory);
 						break;
 				}
 			}

@@ -1,5 +1,10 @@
 package fr.wixonic.market;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.Properties;
+import java.io.FileInputStream;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -11,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class Market implements CommandExecutor {
-	public final String[] inventoryTitles = {"Market", "Item list", "Item info"};
+	public final Properties database;
+
+	public final String[] inventoryTitles;
 
 	public final Inventory marketInventory;
 	public final Inventory itemListInventory;
@@ -19,8 +26,14 @@ public class Market implements CommandExecutor {
 	public Inventory itemInfoInventory;
 
 	public Market() {
-		marketInventory = Bukkit.createInventory(null, 54, inventoryTitles[0]);
+		database = new Properties();
 
+		try {
+			database.load(new FileInputStream(Main.configManager.getString("database-location")));
+		} catch (Exception ignored) {}
+
+		inventoryTitles = new String[]{"Market", "Item list", "Item info"};
+		marketInventory = Bukkit.createInventory(null, 54, inventoryTitles[0]);
 		ItemMeta itemMeta;
 
 		ItemStack quitStack = new ItemStack(Material.BARRIER, 1);
@@ -46,6 +59,14 @@ public class Market implements CommandExecutor {
 		marketInventory.setItem(8, quitStack);
 
 		itemListInventory = Bukkit.createInventory(null, 54, inventoryTitles[1]);
+	}
+
+	public void save() {
+		try {
+			database.store(new FileOutputStream(Main.configManager.getString("database-location")), null);
+		} catch (Exception e) {
+			Bukkit.getLogger().severe("Failed to save the market. Use /save to retry.");
+		}
 	}
 
 	public void updateItemInfo(Material item) {
