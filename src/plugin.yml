@@ -20,28 +20,6 @@ permissions:
         description: Market access permissions
         default: true
 
-        children:
-            market.buy: true
-            market.sell: true
-
-    market.buy:
-        description: Allows to buy in the market
-
-        children:
-            market.buy.requests: true
-
-    market.sell:
-        description: Allows to sell in the market
-
-        children:
-            market.sell.requests: true
-
-    market.buy.requests:
-        description: Allows to create buying requests in the market
-
-    market.sell.requests:
-        description: Allows to create selling requests in the market
-
     market.*:
         description: Wildcard permission
         default: op
