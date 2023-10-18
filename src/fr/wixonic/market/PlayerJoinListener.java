@@ -7,7 +7,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.HexFormat;
 
-public class PlayerJoinListener implements Listener {
+public final class PlayerJoinListener implements Listener {
 	@EventHandler
 	private void onPlayerJoin(PlayerJoinEvent e) {
 		Player player = e.getPlayer();

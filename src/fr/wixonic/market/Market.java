@@ -1,5 +1,6 @@
 package fr.wixonic.market;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.io.FileInputStream;
@@ -15,8 +16,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class Market implements CommandExecutor {
+public final class Market implements CommandExecutor {
 	public final Database database;
+	public boolean databaseIntegrityCompromised;
 
 	public final ItemStack fillingItem = new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1);
 
@@ -29,9 +31,19 @@ public class Market implements CommandExecutor {
 
 		try {
 			database.load(new FileInputStream(Main.configManager.getString("database-location")));
-		} catch (Exception ignored) {}
+			databaseIntegrityCompromised = false;
+		} catch (Exception e) {
+			if (Main.configManager.getBoolean("database-initialized")) {
+				Bukkit.getLogger().severe("Failed to load database at \"" + Main.configManager.getString("database-location") + "\" - " + e);
+				databaseIntegrityCompromised = true;
+			} else {
+				Main.configManager.set("database-initialized", true);
+			}
+		}
 
-		fillingItem.getItemMeta().setDisplayName(ChatColor.RESET + "");
+		ItemMeta fillingItemMeta = fillingItem.getItemMeta();
+		fillingItemMeta.setDisplayName(ChatColor.RESET + "");
+		fillingItem.setItemMeta(fillingItemMeta);
 
 		marketInventory = Bukkit.createInventory(null, 54);
 
@@ -47,21 +59,40 @@ public class Market implements CommandExecutor {
 		itemLore.clear();
 		listStack.setItemMeta(itemMeta);
 
+		ItemStack listValuableStack = new ItemStack(Material.WHEAT, 1);
+		itemMeta = listValuableStack.getItemMeta();
+		itemMeta.setCustomModelData(4);
+		itemMeta.setDisplayName("Ores & Valuables");
+		itemLore.add(count(database.getInt("valuable-buying-requests"), database.getInt("valuable-selling-requests"), "request"));
+		itemMeta.setLore(itemLore);
+		itemLore.clear();
+		listValuableStack.setItemMeta(itemMeta);
+
 		ItemStack listFarmingStack = new ItemStack(Material.WHEAT, 1);
 		itemMeta = listFarmingStack.getItemMeta();
-		itemMeta.setCustomModelData(4);
-		itemMeta.setDisplayName("Farming");
+		itemMeta.setCustomModelData(5);
+		itemMeta.setDisplayName("Farming & Food");
 		itemLore.add(count(database.getInt("farming-buying-requests"), database.getInt("farming-selling-requests"), "request"));
 		itemMeta.setLore(itemLore);
 		itemLore.clear();
 		listFarmingStack.setItemMeta(itemMeta);
+
+		// Building Blocks
+
+		// Special
+
+		// Other
 
 		for (int x = 0; x < 54; ++x) {
 			marketInventory.setItem(x, fillingItem);
 		}
 
 		marketInventory.setItem(0, listStack);
-		marketInventory.setItem(8, listFarmingStack);
+		marketInventory.setItem(4, listValuableStack);
+		marketInventory.setItem(5, listFarmingStack);
+		// marketInventory.setItem(6, listBuildingBlocksStack);
+		// marketInventory.setItem(7, listSpecialStack);
+		// marketInventory.setItem(8, listOtherStack);
 
 		itemListInventory = Bukkit.createInventory(null, 54);
 		itemInfoInventory = Bukkit.createInventory(null, 54);
@@ -80,10 +111,14 @@ public class Market implements CommandExecutor {
 	}
 
 	public void save() {
-		try {
-			database.store(new FileOutputStream(Main.configManager.getString("database-location")), null);
-		} catch (Exception e) {
-			Bukkit.getLogger().severe("Failed to save the market. Use /save to retry.");
+		if (!databaseIntegrityCompromised) {
+			try {
+				database.store(new FileOutputStream(Main.configManager.getString("database-location")), null);
+			} catch (Exception e) {
+				Bukkit.getLogger().severe("Failed to save the market. Use /market:save to retry.");
+			}
+		} else {
+			Bukkit.broadcastMessage("§c--- Failed to save the market: Database compromised. Please check the console and restart the server.");
 		}
 	}
 
@@ -113,7 +148,7 @@ public class Market implements CommandExecutor {
 
 		itemLore.clear();
 
-		inventory.setItem(49, new ItemStack(Material.PLAYER_HEAD));
+		inventory.setItem(49, new CustomSkull(player.getDisplayName()).setPlayer(player));
 	}
 
 	public void updateItemInfo(Material item) {
@@ -138,8 +173,12 @@ public class Market implements CommandExecutor {
 			Player player = ((Player) sender).getPlayer();
 
 			if (cmd.getName().equals("market")) {
-				updateNavigationLine(player, marketInventory, 1, 3);
-				player.openInventory(marketInventory).setTitle("Market");
+				if (databaseIntegrityCompromised) {
+					Bukkit.broadcastMessage("§c--- Failed to save the market: Database compromised. Please check the console and restart the server.");
+				} else {
+					updateNavigationLine(player, marketInventory, 0, 1);
+					player.openInventory(marketInventory).setTitle("Market");
+				}
 			}
 			return true;
 		}

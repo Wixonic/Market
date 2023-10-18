@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryListener implements Listener {
+public final class InventoryListener implements Listener {
 	@EventHandler
 	public void onClick(InventoryClickEvent e) {
 		if (e.getView().getTitle().startsWith("Market")) {
@@ -21,6 +21,18 @@ public class InventoryListener implements Listener {
 				Main.market.updateItemList(data);
 
 				switch (data) {
+					case 0:
+						// Back
+						break;
+
+					case 1:
+						// Previous
+						break;
+
+					case 2:
+						// Next
+						break;
+
 					case 3:
 						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → All items");
 						break;
@@ -30,7 +42,19 @@ public class InventoryListener implements Listener {
 						break;
 
 					case 5:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Farming");
+						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Farming & Food");
+						break;
+
+					case 6:
+						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Building Blocks");
+						break;
+
+					case 7:
+						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Special");
+						break;
+
+					case 8:
+						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Other");
 						break;
 				}
 			}

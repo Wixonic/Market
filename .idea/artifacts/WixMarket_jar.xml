@@ -4,9 +4,9 @@
     <root id="archive" name="WixMarket.jar">
       <element id="module-output" name="WixMarket" />
       <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../../spigot-api-1.20.1-R0.1-66.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../../authlib-1.5.21.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../../guava-32.1.3-jre.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Java/authlib-1.5.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Java/guava-32.1.3-jre.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../../Java/spigot-api-1.20.1-R0.1-66.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>
