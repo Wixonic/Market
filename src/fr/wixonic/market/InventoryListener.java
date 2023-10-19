@@ -1,10 +1,12 @@
 package fr.wixonic.market;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public final class InventoryListener implements Listener {
 	@EventHandler
@@ -12,15 +14,19 @@ public final class InventoryListener implements Listener {
 		if (e.getView().getTitle().startsWith("Market")) {
 			ItemStack itemStack = e.getCurrentItem();
 
+			Player player = (Player) e.getWhoClicked();
+
 			if (itemStack == null || itemStack.getType().isAir()) return;
 
 			if (itemStack.getType() == Material.BARRIER) {
-				e.getWhoClicked().openInventory(Main.market.marketInventory).setTitle("Market");
+				player.openInventory(Main.market.marketInventory.inventory).setTitle("Market");
 			} else if (itemStack.getItemMeta().hasCustomModelData()) {
-				int data = itemStack.getItemMeta().getCustomModelData();
-				Main.market.updateItemList(data);
+				ItemMeta data = itemStack.getItemMeta();
+				int id = data.getCustomModelData();
 
-				switch (data) {
+				Main.market.updateItemList(id, player);
+
+				switch (id) {
 					case 0:
 						// Back
 						break;
@@ -33,28 +39,8 @@ public final class InventoryListener implements Listener {
 						// Next
 						break;
 
-					case 3:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → All items");
-						break;
-
-					case 4:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Ores & Valuables");
-						break;
-
-					case 5:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Farming & Food");
-						break;
-
-					case 6:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Building Blocks");
-						break;
-
-					case 7:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Special");
-						break;
-
-					case 8:
-						e.getWhoClicked().openInventory(Main.market.itemListInventory).setTitle("Market → Other");
+					default:
+						player.openInventory(Main.market.itemListInventory.inventory).setTitle("Market → " + data.getDisplayName());
 						break;
 				}
 			}
