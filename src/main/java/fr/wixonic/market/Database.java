@@ -1,10 +1,54 @@
 package fr.wixonic.market;
 
-import java.util.Properties;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-public final class Database extends Properties {
-	public int getInt(String propertyName) {
-		return Integer.parseInt(this.getProperty(propertyName, "0"));
+public class Database {
+	private Connection connection;
+
+	public Connection connect(String url) throws SQLException {
+		connection = DriverManager.getConnection(url);
+		connection.createStatement().execute("SELECT version FROM CoreData;");
+		return connection;
+	}
+
+	public Object get(String path) throws SQLException {
+		Statement statement = connection.createStatement();
+		
+		return null;
+	}
+
+	public void set(String path, Object obj) {
+		
+	}
+
+	public boolean getBoolean(String path) {
+		try {
+			return (boolean) this.get(path);
+		} catch (Exception ignored) {
+			this.set(path, false);
+			return false;
+		}
+	}
+
+	public int getInt(String path) {
+		try {
+			return (int) this.get(path);
+		} catch (Exception ignored) {
+			this.set(path, 0);
+			return 0;
+		}
+	}
+
+	public String getString(String path) {
+		try {
+			return (String) this.get(path);
+		} catch (Exception ignored) {
+			this.set(path, "");
+			return "";
+		}
 	}
 
 	public String count(int buying, int selling, String type) {

@@ -23,30 +23,42 @@ public final class InventoryListener implements Listener {
 
 				switch (id) {
 					case 0:
-						playerInventory.navigateTo("market");
+						playerInventory.back();
 						break;
 
 					case 1:
-						playerInventory.previous();
+						// playerInventory.first();
 						break;
 
 					case 2:
-						playerInventory.next();
+						playerInventory.previous();
 						break;
-
+						
 					case 3:
-						playerInventory.navigateTo("all");
+						playerInventory.navigateTo("player");
 						break;
 
 					case 4:
-						playerInventory.navigateTo("valuables");
+						playerInventory.next();
 						break;
 
 					case 5:
-						playerInventory.navigateTo("mobdrops");
+						// playerInventory.last();
 						break;
 
 					case 6:
+						playerInventory.navigateTo("all");
+						break;
+
+					case 7:
+						playerInventory.navigateTo("valuables");
+						break;
+
+					case 8:
+						playerInventory.navigateTo("mobdrops");
+						break;
+
+					case 9:
 						playerInventory.navigateTo("farming");
 						break;
 				}

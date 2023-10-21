@@ -10,22 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class CustomInventory {
-	private static final Map<UUID, CustomInventory> inventories = new HashMap<>();
 	public static final Map<String, String> index = new HashMap<>();
-
-	public static CustomInventory getFor(Player player) {
-		CustomInventory inventory = CustomInventory.inventories.get(player.getUniqueId());
-
-		if (inventory != null) {
-			return inventory;
-		} else {
-			inventory = new CustomInventory(player);
-			CustomInventory.inventories.put(player.getUniqueId(), inventory);
-			return inventory;
-		}
-	}
+	private static final Map<UUID, CustomInventory> inventories = new HashMap<>();
 
 	static {
 		index.put("market", "Market");
@@ -40,13 +29,10 @@ public class CustomInventory {
 
 	private final Player player;
 	private final Inventory inventory = Bukkit.createInventory(null, 54);
-
-	private String current = "market";
-	private String title;
-
 	private final Map<String, Integer> pageManager = new HashMap<>();
 	private final ArrayList<String> history = new ArrayList<>();
-
+	private String current = "market";
+	private String title;
 	public CustomInventory(Player player) {
 		this.player = player;
 
@@ -56,48 +42,75 @@ public class CustomInventory {
 		this.display();
 	}
 
+	public static CustomInventory getFor(Player player) {
+		CustomInventory inventory = CustomInventory.inventories.get(player.getUniqueId());
+
+		if (inventory != null) {
+			return inventory;
+		} else {
+			inventory = new CustomInventory(player);
+			CustomInventory.inventories.put(player.getUniqueId(), inventory);
+			return inventory;
+		}
+	}
+
 	private void display() {
 		for (int x = 0; x < inventory.getSize(); ++x)
 			inventory.setItem(x, new CustomButton(Material.BLACK_STAINED_GLASS_PANE, -1, ChatColor.RESET.toString()).itemStack);
 
 		Runnable categories = () -> {
-			inventory.setItem(0, new CustomButton(Material.PAPER, 3, "All items", Main.market.database.count(Main.market.database.getInt("total-buying-requests"), Main.market.database.getInt("total-selling-requests"), "request")).itemStack);
-			inventory.setItem(3, new CustomButton(Material.DIAMOND, 4, "Ores & Valuables", Main.market.database.count(Main.market.database.getInt("valuable-buying-requests"), Main.market.database.getInt("valuable-selling-requests"), "request")).itemStack);
-			inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 5, "Mobdrops", Main.market.database.count(Main.market.database.getInt("mobdrops-buying-requests"), Main.market.database.getInt("mobdrops-selling-requests"), "request")).itemStack);
-			inventory.setItem(5, new CustomButton(Material.WHEAT, 6, "Farming & Food", Main.market.database.count(Main.market.database.getInt("farming-buying-requests"), Main.market.database.getInt("farming-selling-requests"), "request")).itemStack);
-			inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 7, "Building Blocks", Main.market.database.count(Main.market.database.getInt("building-buying-requests"), Main.market.database.getInt("building-selling-requests"), "request")).itemStack);
-			inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 8, "Special", Main.market.database.count(Main.market.database.getInt("special-buying-requests"), Main.market.database.getInt("special-selling-requests"), "request")).itemStack);
-			inventory.setItem(8, new CustomButton(Material.FLINT, 9, "Other", Main.market.database.count(Main.market.database.getInt("other-buying-requests"), Main.market.database.getInt("other-selling-requests"), "request")).itemStack);
+			inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
+			inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
+			inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", Main.market.database.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
+			inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", Main.market.database.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
+			inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", Main.market.database.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
+			inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", Main.market.database.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
+			inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
 		};
 
-		switch (this.current) {
-			case "market":
-				this.history.clear();
-
-				categories.run();
-				break;
-
-			case "farming":
-				this.history.clear();
-				this.history.add("Market");
-
-				categories.run();
-
+		Consumer<String> display = (String category) -> {
+			switch (category) {
 				// Display items
-				break;
+			}
+		};
 
-			default: // Item page
-				Material item = Material.getMaterial(this.current);
-				break;
+		if (this.current.equals("market")) {
+			this.history.clear();
+			categories.run();
+		} else if (false) {
+			this.history.clear();
+			this.history.add("Market");
+
+			categories.run();
+			display.accept(this.current);
+		} else {
+			Material item = Material.getMaterial(this.current);
 		}
-
-		inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Bukkit.getServer().getPluginManager().getPlugin("WixMarket").getDescription().getName() + " v" + Bukkit.getServer().getPluginManager().getPlugin("WixMarket").getDescription().getVersion()).itemStack);
 
 		this.history.add(this.current);
 
-		for (String page : history) {
-			if (page.equals("market")) this.title = "Market";
-			else this.title += " → " + (CustomInventory.index.getOrDefault(page, "Unknown"));
+		if (this.history.size() > 1)
+			this.inventory.setItem(45, new CustomButton(CustomSkull.presets.get("leftArrow"), 0, "Back").itemStack);
+
+		if (this.pageManager.get("current") > 1) {
+			this.inventory.setItem(47, new CustomButton(CustomSkull.presets.get("doubleBackward"), 1, "First").itemStack);
+			this.inventory.setItem(48, new CustomButton(CustomSkull.presets.get("backward"), 2, "Previous").itemStack);
+		}
+
+		this.inventory.setItem(49, new CustomButton(new CustomSkull("You").setPlayer(player), 3, "You").itemStack);
+
+		if (this.pageManager.get("current") < this.pageManager.get("max")) {
+			this.inventory.setItem(50, new CustomButton(CustomSkull.presets.get("forward"), 4, "Next").itemStack);
+			this.inventory.setItem(51, new CustomButton(CustomSkull.presets.get("doubleForward"), 5, "Last").itemStack);
+		}
+
+
+		this.inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Bukkit.getServer().getPluginManager().getPlugin("WixMarket").getDescription().getName() + " v" + Bukkit.getServer().getPluginManager().getPlugin("WixMarket").getDescription().getVersion()).itemStack);
+
+		try {
+			this.title = CustomInventory.index.getOrDefault(this.history.get(this.history.size() - 2), "Unknown") + " → " + CustomInventory.index.getOrDefault(this.current, "Unknown");
+		} catch (Exception ignored) {
+			this.title = "Market";
 		}
 	}
 
@@ -117,20 +130,29 @@ public class CustomInventory {
 	public void navigateTo(String name) {
 		this.current = name;
 		this.display();
-		this.history.add(name);
 	}
 
 	public void back() {
-		this.history.remove(history.size() - 1);
+		if (this.history.size() > 2) this.history.remove(history.size() - 1);
 		this.current = this.history.remove(history.size() - 1);
+
+		this.display();
 	}
 
 	public void previous() {
 		if (this.pageManager.get("current") > 1) this.pageManager.put("current", this.pageManager.get("current") - 1);
+
+		this.history.remove(history.size() - 1);
+
+		this.display();
 	}
 
 	public void next() {
 		if (this.pageManager.get("current") < this.pageManager.get("max"))
 			this.pageManager.put("current", this.pageManager.get("current") + 1);
+
+		this.history.remove(history.size() - 1);
+
+		this.display();
 	}
 }

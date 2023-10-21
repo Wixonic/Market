@@ -10,7 +10,7 @@ public final class ConfigurationManager {
 	}
 
 	public void fillDefault() {
-		config.addDefault("database-location", "market.db");
+		config.addDefault("database-location", "jdbc:sqlite:market.db");
 		config.addDefault("database-initialized", "false");
 
 		config.options().copyDefaults(true);
