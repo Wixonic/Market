@@ -1,6 +1,5 @@
 package fr.wixonic.market;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,33 +15,43 @@ public final class InventoryListener implements Listener {
 
 			Player player = (Player) e.getWhoClicked();
 
-			if (itemStack == null || itemStack.getType().isAir()) return;
+			CustomInventory playerInventory = CustomInventory.getFor(player);
 
-			if (itemStack.getType() == Material.BARRIER) {
-				player.openInventory(Main.market.marketInventory.inventory).setTitle("Market");
-			} else if (itemStack.getItemMeta().hasCustomModelData()) {
+			if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getItemMeta().hasCustomModelData()) {
 				ItemMeta data = itemStack.getItemMeta();
 				int id = data.getCustomModelData();
 
-				Main.market.updateItemList(id, player);
-
 				switch (id) {
 					case 0:
-						// Back
+						playerInventory.navigateTo("market");
 						break;
 
 					case 1:
-						// Previous
+						playerInventory.previous();
 						break;
 
 					case 2:
-						// Next
+						playerInventory.next();
 						break;
 
-					default:
-						player.openInventory(Main.market.itemListInventory.inventory).setTitle("Market → " + data.getDisplayName());
+					case 3:
+						playerInventory.navigateTo("all");
+						break;
+
+					case 4:
+						playerInventory.navigateTo("valuables");
+						break;
+
+					case 5:
+						playerInventory.navigateTo("mobdrops");
+						break;
+
+					case 6:
+						playerInventory.navigateTo("farming");
 						break;
 				}
+
+				player.openInventory(playerInventory.getCurrent()).setTitle(playerInventory.getTitle());
 			}
 
 			e.setCancelled(true);

@@ -36,7 +36,8 @@ public final class CustomSkull {
 			profileField = meta.getClass().getDeclaredField("profile");
 			profileField.setAccessible(true);
 			profileField.set(meta, profile);
-		} catch (Exception ignored) { }
+		} catch (Exception ignored) {
+		}
 
 		head.setItemMeta(meta);
 

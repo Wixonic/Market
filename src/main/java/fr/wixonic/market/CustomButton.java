@@ -10,7 +10,7 @@ import java.util.Collections;
 public class CustomButton {
 	public final ItemStack itemStack;
 
-	public CustomButton(Material material, int id, String displayName, String ...lore) {
+	public CustomButton(Material material, int id, String displayName, String... lore) {
 		itemStack = new ItemStack(material, 1);
 		ItemMeta itemMeta = itemStack.getItemMeta();
 		itemMeta.setCustomModelData(id);
