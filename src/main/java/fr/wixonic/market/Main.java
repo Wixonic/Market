@@ -9,7 +9,7 @@ public final class Main extends JavaPlugin {
 	public static Market market;
 
 	@Override
-	public void onEnable() {
+	public final void onEnable() {
 		configManager = new ConfigurationManager(getConfig());
 		configManager.fillDefault();
 		saveConfig();

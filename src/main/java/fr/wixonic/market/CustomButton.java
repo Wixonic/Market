@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CustomButton {
+public final class CustomButton {
 	public final ItemStack itemStack;
 	private final int id;
 	private final String displayName;
@@ -40,7 +40,7 @@ public class CustomButton {
 		this.setUp();
 	}
 
-	private void setUp() {
+	private final void setUp() {
 		ItemMeta itemMeta = this.itemStack.getItemMeta();
 		itemMeta.setCustomModelData(this.id);
 		itemMeta.setDisplayName(this.displayName);

@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public final class InventoryListener implements Listener {
 	@EventHandler
-	public void onClick(InventoryClickEvent e) {
+	public final void onClick(InventoryClickEvent e) {
 		if (e.getView().getTitle().startsWith("Market")) {
 			ItemStack itemStack = e.getCurrentItem();
 

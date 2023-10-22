@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class CustomInventory {
+public final class CustomInventory {
 	public static final Map<String, String> index = new HashMap<>();
 	private static final Map<UUID, CustomInventory> inventories = new HashMap<>();
 
@@ -33,6 +33,7 @@ public class CustomInventory {
 	private final ArrayList<String> history = new ArrayList<>();
 	private String current = "market";
 	private String title;
+	
 	public CustomInventory(Player player) {
 		this.player = player;
 
@@ -42,7 +43,7 @@ public class CustomInventory {
 		this.display();
 	}
 
-	public static CustomInventory getFor(Player player) {
+	public final static CustomInventory getFor(Player player) {
 		CustomInventory inventory = CustomInventory.inventories.get(player.getUniqueId());
 
 		if (inventory != null) {
@@ -54,7 +55,7 @@ public class CustomInventory {
 		}
 	}
 
-	private void display() {
+	private final void display() {
 		for (int x = 0; x < inventory.getSize(); ++x)
 			inventory.setItem(x, new CustomButton(Material.BLACK_STAINED_GLASS_PANE, -1, ChatColor.RESET.toString()).itemStack);
 
@@ -114,32 +115,32 @@ public class CustomInventory {
 		}
 	}
 
-	public Inventory get(String name) {
+	public final Inventory get(String name) {
 		this.navigateTo(name);
 		return this.inventory;
 	}
 
-	public Inventory getCurrent() {
+	public final Inventory getCurrent() {
 		return this.inventory;
 	}
 
-	public String getTitle() {
+	public final String getTitle() {
 		return this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "");
 	}
 
-	public void navigateTo(String name) {
+	public final void navigateTo(String name) {
 		this.current = name;
 		this.display();
 	}
 
-	public void back() {
+	public final void back() {
 		if (this.history.size() > 2) this.history.remove(history.size() - 1);
 		this.current = this.history.remove(history.size() - 1);
 
 		this.display();
 	}
 
-	public void previous() {
+	public final void previous() {
 		if (this.pageManager.get("current") > 1) this.pageManager.put("current", this.pageManager.get("current") - 1);
 
 		this.history.remove(history.size() - 1);
@@ -147,7 +148,7 @@ public class CustomInventory {
 		this.display();
 	}
 
-	public void next() {
+	public final void next() {
 		if (this.pageManager.get("current") < this.pageManager.get("max"))
 			this.pageManager.put("current", this.pageManager.get("current") + 1);
 

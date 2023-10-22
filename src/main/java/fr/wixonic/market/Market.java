@@ -8,23 +8,32 @@ import org.bukkit.entity.Player;
 
 public final class Market implements CommandExecutor {
 	public final Database database;
-	public boolean databaseIntegrityCompromised;
+	public boolean databaseIntegrityCompromised = true;
 
 	public Market() {
 		database = new Database();
-		
-		try {
-			database.connect(Main.configManager.getString("database-location"));
-			databaseIntegrityCompromised = false;
-		} catch (Exception e) {
-			Bukkit.getLogger().severe("Failed to connect to database at \"" + Main.configManager.getString("database-location") + "\" - " + e);
-			Bukkit.getLogger().severe("Please check if the database-location field matches with the path of the database.");
-			databaseIntegrityCompromised = true;
+
+		if (Main.configManager.getBoolean("database-initialized")) {
+			try {
+				database.load(Main.configManager.getString("database"));
+				databaseIntegrityCompromised = false;
+			} catch (Exception e) {
+				Bukkit.getLogger().severe("Failed to connect to database at \"" + Main.configManager.getString("database-url") + "\" - " + e);
+				Bukkit.getLogger().severe("Please check if the database-url field matches with the path of the database.");
+			}
+		} else {
+			try {
+				database.initialize(Main.configManager.getString("database"));
+				Main.configManager.set("database-initialized", true);
+				databaseIntegrityCompromised = false;
+			} catch (Exception e) {
+				Bukkit.getLogger().severe("Failed to create the database at \"" + Main.configManager.getString("database-url") + "\" - " + e);
+			}
 		}
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public final boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = ((Player) sender).getPlayer();
 

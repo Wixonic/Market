@@ -9,22 +9,22 @@ public final class ConfigurationManager {
 		config = pluginConfig;
 	}
 
-	public void fillDefault() {
-		config.addDefault("database-location", "jdbc:sqlite:market.db");
-		config.addDefault("database-initialized", "false");
+	public final void fillDefault() {
+		config.addDefault("database-url", "market.db");
+		config.addDefault("database-initialized", false);
 
 		config.options().copyDefaults(true);
 	}
 
-	public String getString(String key) {
+	public final String getString(String key) {
 		return config.getString(key);
 	}
 
-	public boolean getBoolean(String key) {
+	public final boolean getBoolean(String key) {
 		return config.getBoolean(key);
 	}
 
-	public void set(String key, Object value) {
+	public final void set(String key, Object value) {
 		config.set(key, value);
 	}
 }
