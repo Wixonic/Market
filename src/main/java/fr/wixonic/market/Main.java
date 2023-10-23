@@ -3,6 +3,8 @@ package fr.wixonic.market;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
+	private static Main instance;
+	
 	public static ConfigurationManager configManager;
 	public static InventoryListener inventoryListener;
 	public static PlayerJoinListener playerJoinListener;
@@ -10,9 +12,14 @@ public final class Main extends JavaPlugin {
 
 	@Override
 	public final void onEnable() {
-		configManager = new ConfigurationManager(getConfig());
-		configManager.fillDefault();
-		saveConfig();
+		Main.instance = this;
+
+		Main.configManager = new ConfigurationManager(this.getConfig());
+		Main.configManager.fillDefault();
+		this.saveConfig();this.config.addDefault("database-url", "market.db");
+		this.config.addDefault("database-initialized", false);
+
+		this.config.options().copyDefaults(true);
 
 		CustomSkull.presets.put("leftArrow", new CustomSkull("Back").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWYxMzNlOTE5MTlkYjBhY2VmZGMyNzJkNjdmZDg3YjRiZTg4ZGM0NGE5NTg5NTg4MjQ0NzRlMjFlMDZkNTNlNiJ9fX0="));
 		CustomSkull.presets.put("doubleBackward", new CustomSkull("First").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGMzMDFhMTdjOTU1ODA3ZDg5ZjljNzJhMTkyMDdkMTM5M2I4YzU4YzRlNmU0MjBmNzE0ZjY5NmE4N2ZkZCJ9fX0="));
@@ -22,13 +29,17 @@ public final class Main extends JavaPlugin {
 		CustomSkull.presets.put("checkmark", new CustomSkull("Validate").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzdiNjJkMjc1ZDg3YzA5Y2UxMGFjYmNjZjM0YzRiYTBiNWYxMzVkNjQzZGM1MzdkYTFmMWRmMzU1YTIyNWU4MiJ9fX0="));
 		// CustomSkull.presets.put("name", new CustomSkull("displayName").setTexture("texture"));
 
-		inventoryListener = new InventoryListener();
-		playerJoinListener = new PlayerJoinListener();
+		Main.inventoryListener = new InventoryListener();
+		Main.playerJoinListener = new PlayerJoinListener();
 
-		market = new Market();
+		Main.market = new Market();
 
-		getServer().getPluginManager().registerEvents(inventoryListener, this);
-		getServer().getPluginManager().registerEvents(playerJoinListener, this);
-		getCommand("market").setExecutor(market);
+		this.getServer().getPluginManager().registerEvents(Main.inventoryListener, this);
+		this.getServer().getPluginManager().registerEvents(Main.playerJoinListener, this);
+		this.getCommand("market").setExecutor(Main.market);
+	}
+	
+	public static Main getInstance() {
+		return Main.instance;
 	}
 }

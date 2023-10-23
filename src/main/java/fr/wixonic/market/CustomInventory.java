@@ -106,7 +106,7 @@ public final class CustomInventory {
 		}
 
 
-		this.inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Bukkit.getServer().getPluginManager().getPlugin("WixMarket").getDescription().getName() + " v" + Bukkit.getServer().getPluginManager().getPlugin("WixMarket").getDescription().getVersion()).itemStack);
+		this.inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Main.getInstance().getDescription().getName() + " v" + Main.getInstance().getDescription().getVersion()).itemStack);
 
 		try {
 			this.title = CustomInventory.index.getOrDefault(this.history.get(this.history.size() - 2), "Unknown") + " → " + CustomInventory.index.getOrDefault(this.current, "Unknown");
