@@ -15,19 +15,19 @@ public final class Market implements CommandExecutor {
 
 		if (Main.configManager.getBoolean("database-initialized")) {
 			try {
-				database.load(Main.configManager.getString("database"));
+				database.load(Main.configManager.getString("database-location"));
 				databaseIntegrityCompromised = false;
 			} catch (Exception e) {
-				Bukkit.getLogger().severe("Failed to connect to database at \"" + Main.configManager.getString("database-url") + "\" - " + e);
+				Bukkit.getLogger().severe("Failed to connect to database at \"" + Main.configManager.getString("database-location") + "\" - " + e);
 				Bukkit.getLogger().severe("Please check if the database-url field matches with the path of the database.");
 			}
 		} else {
 			try {
-				database.initialize(Main.configManager.getString("database"));
+				database.initialize(Main.configManager.getString("database-location"));
 				Main.configManager.set("database-initialized", true);
 				databaseIntegrityCompromised = false;
 			} catch (Exception e) {
-				Bukkit.getLogger().severe("Failed to create the database at \"" + Main.configManager.getString("database-url") + "\" - " + e);
+				Bukkit.getLogger().severe("Failed to create the database at \"" + Main.configManager.getString("database-location") + "\" - " + e);
 			}
 		}
 	}

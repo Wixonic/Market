@@ -3,12 +3,15 @@ package fr.wixonic.market;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
-	private static Main instance;
-	
 	public static ConfigurationManager configManager;
 	public static InventoryListener inventoryListener;
 	public static PlayerJoinListener playerJoinListener;
 	public static Market market;
+	private static Main instance;
+
+	public static Main getInstance() {
+		return Main.instance;
+	}
 
 	@Override
 	public final void onEnable() {
@@ -16,10 +19,7 @@ public final class Main extends JavaPlugin {
 
 		Main.configManager = new ConfigurationManager(this.getConfig());
 		Main.configManager.fillDefault();
-		this.saveConfig();this.config.addDefault("database-url", "market.db");
-		this.config.addDefault("database-initialized", false);
-
-		this.config.options().copyDefaults(true);
+		this.saveConfig();
 
 		CustomSkull.presets.put("leftArrow", new CustomSkull("Back").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWYxMzNlOTE5MTlkYjBhY2VmZGMyNzJkNjdmZDg3YjRiZTg4ZGM0NGE5NTg5NTg4MjQ0NzRlMjFlMDZkNTNlNiJ9fX0="));
 		CustomSkull.presets.put("doubleBackward", new CustomSkull("First").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGMzMDFhMTdjOTU1ODA3ZDg5ZjljNzJhMTkyMDdkMTM5M2I4YzU4YzRlNmU0MjBmNzE0ZjY5NmE4N2ZkZCJ9fX0="));
@@ -37,9 +37,5 @@ public final class Main extends JavaPlugin {
 		this.getServer().getPluginManager().registerEvents(Main.inventoryListener, this);
 		this.getServer().getPluginManager().registerEvents(Main.playerJoinListener, this);
 		this.getCommand("market").setExecutor(Main.market);
-	}
-	
-	public static Main getInstance() {
-		return Main.instance;
 	}
 }

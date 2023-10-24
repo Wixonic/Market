@@ -1,0 +1,4 @@
+# Configuration file for WixMarket
+
+database-location: market.db
+database-initialized: false # DO NOT change
