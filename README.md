@@ -1,4 +1,5 @@
 # WixMarket
+
 > Add a powerful market system in your Minecraft server
 
 [![Last stable release](https://img.shields.io/github/v/release/Wixonic/Market?display_name=tag&label=Last%20stable%20release)](https://github.com/Wixonic/Market/releases) [![Last release](https://img.shields.io/github/v/release/Wixonic/Market?display_name=tag&label=Last%20release&include_prereleases)](https://github.com/Wixonic/Market/releases)<br />
@@ -12,4 +13,5 @@
 [![License](https://img.shields.io/github/license/Wixonic/Market?color=%23555&label=License)](https://github.com/Wixonic/Market/blob/Default/LICENSE)
 
 ### Dependencies
+
 This plugin doesn't provide an economy API and depends on [Vault Economy API](https://www.spigotmc.org/resources/vault.34315/).
