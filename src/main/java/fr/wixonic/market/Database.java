@@ -6,9 +6,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +16,7 @@ import java.util.Map;
 public final class Database {
 	public final static Map<String, List<String>> compatibilityTable = new HashMap<>();
 	public final static String latestVersion = "v5";
+	public static final Path location = Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "market.db");
 
 	static {
 		Database.compatibilityTable.put("v6", List.of("v6"));
@@ -27,79 +28,78 @@ public final class Database {
 	}
 
 	public String version;
-	public JSONObject data;
+	public JSONObject data = new JSONObject();
 
-	public final void initialize(String url) throws IOException { // TODO: Something is null and idk why
-		this.data = new JSONObject();
-		JSONObject core = new JSONObject();
-		core.put("version", Database.latestVersion);
-		this.data.put("core", core);
-		Files.writeString(Path.of(url), this.data.toJSONString());
+	public final void initialize() throws IOException {
+		Main.getInstance().getLogger().info("Initializing database at " + Database.location.toString());
+
+		this.version = Database.latestVersion;
+		this.set("core.version", this.version);
+		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
 	}
 
-	public final void load(String url) throws IOException, ParseException, RuntimeException {
-		this.data = (JSONObject) new JSONParser().parse(Files.readString(Path.of(url)));
+	public final void load() throws IOException, ParseException, RuntimeException {
+		Main.getInstance().getLogger().info("Loading database from " + Database.location.toString());
 
-		JSONObject core = (JSONObject) this.data.get("core");
-		List<String> compatibilityTable = Database.compatibilityTable.get(core.get("version"));
+		this.data = (JSONObject) new JSONParser().parse(Files.readString(Database.location));
 
-		if (compatibilityTable.indexOf(Database.latestVersion) < 0) {
-			throw new RuntimeException("Invalid database version, please refer to the wiki (https://github.com/Wixonic/WixMarket/wiki/Database-Compatibility)");
+		List<String> compatibilityTable = Database.compatibilityTable.get(this.getString("core.version"));
+
+		if (compatibilityTable == null || !compatibilityTable.contains(Database.latestVersion)) {
+			Main.getInstance().getLogger().severe("Invalid database version, please refer to the wiki (https://github.com/Wixonic/Market/wiki/Database-Compatibility)");
+			Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 		}
 	}
 
-	public final Object get(String path) {
+	public final void save() throws IOException {
+		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
+	}
 
-		return null;
+	public final Object get(String path) {
+		return this.data.get(path);
 	}
 
 	public final void set(String path, Object obj) {
+		this.data.put(path, obj);
 
+		try {
+			this.save();
+		} catch (IOException e) {
+			Main.getInstance().getLogger().warning("Failed to save database to " + Database.location.toString() + " - " + e);
+		}
 	}
 
 	public final void delete(String path) {
-
+		this.data.remove(path);
 	}
 
 	public final boolean getBoolean(String path) {
-		try {
-			return (boolean) this.get(path);
-		} catch (Exception e) {
-			try {
-				this.set(path, false);
-			} catch (Exception e2) {
-				Bukkit.getLogger().severe("The database might be compromised. Please check previous logs.");
-			}
-
+		Object value = this.data.get(path);
+		if (value == null) {
+			this.set(path, false);
 			return false;
+		} else {
+			return (boolean) this.data.get(path);
 		}
 	}
 
 	public final int getInt(String path) {
-		try {
-			return (int) this.get(path);
-		} catch (Exception ignored) {
-			try {
-				this.set(path, 0);
-			} catch (Exception e2) {
-				Bukkit.getLogger().severe("The database might be compromised. Please check previous logs.");
-			}
-
+		Object value = this.data.get(path);
+		if (value == null) {
+			this.set(path, 0);
 			return 0;
+		} else {
+			return (int) this.data.get(path);
 		}
 	}
 
 	public final String getString(String path) {
-		try {
-			return (String) this.get(path);
-		} catch (Exception ignored) {
-			try {
-				this.set(path, "");
-			} catch (Exception e2) {
-				Bukkit.getLogger().severe("The database might be compromised. Please check previous logs.");
-			}
-
+		Object value = this.data.get(path);
+		if (value == null) {
+			this.set(path, "");
 			return "";
+		} else {
+			return (String) this.data.get(path);
 		}
 	}
 

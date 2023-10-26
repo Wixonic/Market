@@ -1,6 +1,6 @@
 main: fr.wixonic.market.Main
 api-version: 1.20
-version: v1.0.0
+version: 1.0.0
 
 author: Wixonic
 name: WixMarket

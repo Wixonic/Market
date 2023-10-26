@@ -27,7 +27,7 @@ public final class CustomSkull {
 		head.setItemMeta(meta);
 	}
 
-	public final ItemStack setTexture(String base64) {
+	public ItemStack setTexture(String base64) {
 		profile.getProperties().put("textures", new Property("textures", base64));
 
 		Field profileField = null;
@@ -44,7 +44,7 @@ public final class CustomSkull {
 		return head;
 	}
 
-	public final ItemStack setPlayer(Player player) {
+	public ItemStack setPlayer(Player player) {
 		meta.setOwningPlayer(player);
 		head.setItemMeta(meta);
 		return head;

@@ -43,7 +43,7 @@ public final class CustomInventory {
 		this.display();
 	}
 
-	public final static CustomInventory getFor(Player player) {
+	public static CustomInventory getFor(Player player) {
 		CustomInventory inventory = CustomInventory.inventories.get(player.getUniqueId());
 
 		if (inventory != null) {
@@ -55,7 +55,7 @@ public final class CustomInventory {
 		}
 	}
 
-	private final void display() {
+	private void display() {
 		for (int x = 0; x < inventory.getSize(); ++x)
 			inventory.setItem(x, new CustomButton(Material.BLACK_STAINED_GLASS_PANE, -1, ChatColor.RESET.toString()).itemStack);
 
@@ -115,32 +115,32 @@ public final class CustomInventory {
 		}
 	}
 
-	public final Inventory get(String name) {
+	public Inventory get(String name) {
 		this.navigateTo(name);
 		return this.inventory;
 	}
 
-	public final Inventory getCurrent() {
+	public Inventory getCurrent() {
 		return this.inventory;
 	}
 
-	public final String getTitle() {
+	public String getTitle() {
 		return this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "");
 	}
 
-	public final void navigateTo(String name) {
+	public void navigateTo(String name) {
 		this.current = name;
 		this.display();
 	}
 
-	public final void back() {
+	public void back() {
 		if (this.history.size() > 2) this.history.remove(history.size() - 1);
 		this.current = this.history.remove(history.size() - 1);
 
 		this.display();
 	}
 
-	public final void previous() {
+	public void previous() {
 		if (this.pageManager.get("current") > 1) this.pageManager.put("current", this.pageManager.get("current") - 1);
 
 		this.history.remove(history.size() - 1);
@@ -148,7 +148,7 @@ public final class CustomInventory {
 		this.display();
 	}
 
-	public final void next() {
+	public void next() {
 		if (this.pageManager.get("current") < this.pageManager.get("max"))
 			this.pageManager.put("current", this.pageManager.get("current") + 1);
 

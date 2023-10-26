@@ -1,4 +1,3 @@
 # Configuration file for WixMarket
 
-database-location: market.db
-database-initialized: false # DO NOT change
+database-initialized: false # DO NOT change, except if you want to reset the database
