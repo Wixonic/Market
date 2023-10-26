@@ -11,6 +11,7 @@
 
 [![Contributors](https://img.shields.io/github/contributors/Wixonic/Market?color=%2308F&label=Contributors)](https://github.com/Wixonic/Market/blob/Default/.github/CONTRIBUTING.md)
 [![License](https://img.shields.io/github/license/Wixonic/Market?color=%23555&label=License)](https://github.com/Wixonic/Market/blob/Default/LICENSE)
+[![Discord](https://img.shields.io/discord/1020663521530351627?logo=discord&logoColor=94ABFC&label=Discord&color=7289DA)](https://discord.gg/BcXFAVKJZQ)
 
 ### Dependencies
 
