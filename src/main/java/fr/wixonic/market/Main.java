@@ -15,7 +15,7 @@ public final class Main extends JavaPlugin {
 	}
 
 	@Override
-	public final void onEnable() {
+	public void onEnable() {
 		Main.instance = this;
 
 		Main.configManager = new ConfigurationManager(this.getConfig());

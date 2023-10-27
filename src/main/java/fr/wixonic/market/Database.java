@@ -16,7 +16,7 @@ import java.util.Map;
 public final class Database {
 	public final static Map<String, List<String>> compatibilityTable = new HashMap<>();
 	public final static String latestVersion = "v5";
-	public static final Path location = Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "market.db");
+	public final static Path location = Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "market.db");
 
 	static {
 		Database.compatibilityTable.put("v6", List.of("v6"));
@@ -30,7 +30,7 @@ public final class Database {
 	public String version;
 	public JSONObject data = new JSONObject();
 
-	public final void initialize() throws IOException {
+	public void initialize() throws IOException {
 		Main.getInstance().getLogger().info("Initializing database at " + Database.location.toString());
 
 		this.version = Database.latestVersion;
@@ -38,7 +38,7 @@ public final class Database {
 		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
 	}
 
-	public final void load() throws IOException, ParseException, RuntimeException {
+	public void load() throws IOException, ParseException, RuntimeException {
 		Main.getInstance().getLogger().info("Loading database from " + Database.location.toString());
 
 		this.data = (JSONObject) new JSONParser().parse(Files.readString(Database.location));
@@ -51,15 +51,15 @@ public final class Database {
 		}
 	}
 
-	public final void save() throws IOException {
+	public void save() throws IOException {
 		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
 	}
 
-	public final Object get(String path) {
+	public Object get(String path) {
 		return this.data.get(path);
 	}
 
-	public final void set(String path, Object obj) {
+	public void set(String path, Object obj) {
 		this.data.put(path, obj);
 
 		try {
@@ -69,41 +69,44 @@ public final class Database {
 		}
 	}
 
-	public final void delete(String path) {
+	public void delete(String path) {
 		this.data.remove(path);
 	}
 
-	public final boolean getBoolean(String path) {
+	public boolean getBoolean(String path) {
 		Object value = this.data.get(path);
+
 		if (value == null) {
 			this.set(path, false);
 			return false;
 		} else {
-			return (boolean) this.data.get(path);
+			return (boolean) value;
 		}
 	}
 
-	public final int getInt(String path) {
+	public int getInt(String path) {
 		Object value = this.data.get(path);
+
 		if (value == null) {
 			this.set(path, 0);
 			return 0;
 		} else {
-			return (int) this.data.get(path);
+			return Math.toIntExact((long) value);
 		}
 	}
 
-	public final String getString(String path) {
+	public String getString(String path) {
 		Object value = this.data.get(path);
+
 		if (value == null) {
 			this.set(path, "");
 			return "";
 		} else {
-			return (String) this.data.get(path);
+			return (String) value;
 		}
 	}
 
-	public final String count(int buying, int selling, String type) {
+	public String count(int buying, int selling, String type) {
 		if (buying > 0 && selling > 0) {
 			return (buying + selling) + " " + type + "s - " + count(buying, 0, "buying " + type) + ", " + count(0, selling, "selling " + type);
 		} else if (buying > 0) {

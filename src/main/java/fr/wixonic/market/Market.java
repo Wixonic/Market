@@ -32,7 +32,7 @@ public final class Market implements CommandExecutor {
 	}
 
 	@Override
-	public final boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = ((Player) sender).getPlayer();
 

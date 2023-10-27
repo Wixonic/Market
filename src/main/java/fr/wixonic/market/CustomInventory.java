@@ -33,7 +33,7 @@ public final class CustomInventory {
 	private final ArrayList<String> history = new ArrayList<>();
 	private String current = "market";
 	private String title;
-	
+
 	public CustomInventory(Player player) {
 		this.player = player;
 
@@ -46,9 +46,8 @@ public final class CustomInventory {
 	public static CustomInventory getFor(Player player) {
 		CustomInventory inventory = CustomInventory.inventories.get(player.getUniqueId());
 
-		if (inventory != null) {
-			return inventory;
-		} else {
+		if (inventory != null) return inventory;
+		else {
 			inventory = new CustomInventory(player);
 			CustomInventory.inventories.put(player.getUniqueId(), inventory);
 			return inventory;
@@ -56,17 +55,17 @@ public final class CustomInventory {
 	}
 
 	private void display() {
-		for (int x = 0; x < inventory.getSize(); ++x)
-			inventory.setItem(x, new CustomButton(Material.BLACK_STAINED_GLASS_PANE, -1, ChatColor.RESET.toString()).itemStack);
+		for (int x = 0; x < this.inventory.getSize(); ++x)
+			this.inventory.setItem(x, new CustomButton(Material.BLACK_STAINED_GLASS_PANE, -1, ChatColor.RESET.toString()).itemStack);
 
 		Runnable categories = () -> {
-			inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
-			inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
-			inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", Main.market.database.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
-			inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", Main.market.database.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
-			inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", Main.market.database.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
-			inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", Main.market.database.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
-			inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", Main.market.database.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", Main.market.database.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", Main.market.database.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", Main.market.database.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
 		};
 
 		Consumer<String> display = (String category) -> {

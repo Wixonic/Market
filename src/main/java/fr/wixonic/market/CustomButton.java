@@ -40,7 +40,7 @@ public final class CustomButton {
 		this.setUp();
 	}
 
-	private final void setUp() {
+	private void setUp() {
 		ItemMeta itemMeta = this.itemStack.getItemMeta();
 		itemMeta.setCustomModelData(this.id);
 		itemMeta.setDisplayName(this.displayName);
