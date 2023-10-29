@@ -89,7 +89,7 @@ public class InventoryListener implements Listener {
 					case 12:
 						playerInventory.navigateTo("other");
 						break;
-						
+
 					case 13:
 						playerInventory.navigateTo(e.getCurrentItem().getType().name());
 						break;

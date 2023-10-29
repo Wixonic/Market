@@ -9,45 +9,51 @@ import java.util.Collections;
 
 public final class CustomButton {
 	public final ItemStack itemStack;
-	private final int id;
-	private final String displayName;
-	private final String[] lore;
+
+	public CustomButton(Material material, int id) {
+		this.itemStack = new ItemStack(material, 1);
+		this.setUp(id, null);
+	}
+
+	public CustomButton(Material material, int id, String displayName) {
+		this.itemStack = new ItemStack(material, 1);
+		this.setUp(id, displayName);
+	}
 
 	public CustomButton(Material material, int id, String displayName, String... lore) {
 		this.itemStack = new ItemStack(material, 1);
-		this.id = id;
-		this.displayName = displayName;
-		this.lore = lore;
-
-		this.setUp();
+		this.setUp(id, displayName);
+		this.setLore(lore);
 	}
 
-	public CustomButton(CustomSkull skull, int id, String displayName, String... lore) {
-		this.itemStack = skull.head;
-		this.id = id;
-		this.displayName = displayName;
-		this.lore = lore;
+	public CustomButton(ItemStack itemStack, int id) {
+		this.itemStack = itemStack;
+		this.setUp(id, null);
+	}
 
-		this.setUp();
+	public CustomButton(ItemStack itemStack, int id, String displayName) {
+		this.itemStack = itemStack;
+		this.setUp(id, displayName);
 	}
 
 	public CustomButton(ItemStack itemStack, int id, String displayName, String... lore) {
 		this.itemStack = itemStack;
-		this.id = id;
-		this.displayName = displayName;
-		this.lore = lore;
-		
-		this.setUp();
+		this.setUp(id, displayName);
+		this.setLore(lore);
 	}
 
-	private void setUp() {
+	public void setLore(String... lore) {
 		ItemMeta itemMeta = this.itemStack.getItemMeta();
-		itemMeta.setCustomModelData(this.id);
-		itemMeta.setDisplayName(this.displayName);
 		ArrayList<String> itemLore = new ArrayList<String>();
-		Collections.addAll(itemLore, this.lore);
+		Collections.addAll(itemLore, lore);
 		itemMeta.setLore(itemLore);
-		itemLore.clear();
+		this.itemStack.setItemMeta(itemMeta);
+	}
+
+	private void setUp(int id, String displayName) {
+		ItemMeta itemMeta = this.itemStack.getItemMeta();
+		itemMeta.setCustomModelData(id);
+		if (displayName != null) itemMeta.setDisplayName(displayName);
 		this.itemStack.setItemMeta(itemMeta);
 	}
 }
