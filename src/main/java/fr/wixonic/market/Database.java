@@ -13,6 +13,12 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 
 public final class Database {
 	public final static Map<String, List<String>> compatibilityTable = new HashMap<>();
@@ -37,6 +43,8 @@ public final class Database {
 		this.version = Database.latestVersion;
 		this.set("core.version", this.version);
 		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
+
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::save, 0L, (long) Main.configManager.getInt("auto-save"), TimeUnit.SECONDS);
 	}
 
 	public void load() throws IOException, ParseException, RuntimeException {
@@ -50,10 +58,16 @@ public final class Database {
 			Main.getInstance().getLogger().severe("Invalid database version, please refer to the wiki (https://github.com/Wixonic/Market/wiki/Database-Compatibility)");
 			Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 		}
+
+		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::save, 0L, (long) Main.configManager.getInt("auto-save"), TimeUnit.SECONDS);
 	}
 
-	public void save() throws IOException {
-		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
+	public void save() {
+		try {
+			Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			Main.getInstance().getLogger().warning("Failed to save database to " + Database.location.toString() + " - " + e);
+		}
 	}
 
 	public Object get(String path) {
@@ -62,12 +76,6 @@ public final class Database {
 
 	public void set(String path, Object obj) {
 		this.data.put(path, obj);
-
-		try {
-			this.save();
-		} catch (IOException e) {
-			Main.getInstance().getLogger().warning("Failed to save database to " + Database.location.toString() + " - " + e);
-		}
 	}
 
 	public void delete(String path) {

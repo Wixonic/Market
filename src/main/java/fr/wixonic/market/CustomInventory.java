@@ -67,27 +67,10 @@ public final class CustomInventory {
 		};
 
 		Consumer<String> itemList = (String category) -> {
-			ArrayList<Material> list = new ArrayList<>();
+			List<Material> list = Categories.get(category);
 
-			Consumer<String> add = (String categoryName) -> {
-				List<String> categoryList = Main.configManager.getList("items." + categoryName);
-
-				for (String item : categoryList) {
-					Material material = Material.getMaterial(item.toUpperCase());
-					if (material != null) list.add(material);
-				}
-			};
-
-			if (category.equals("all")) {
-				add.accept("valuables");
-				add.accept("mobdrops");
-				add.accept("farming");
-				add.accept("blocks");
-				add.accept("special");
-				add.accept("other");
-			} else {
-				add.accept(category);
-			}
+			this.pageManager.put("max", (int) Math.floor(list.size() / 36) + 1);
+			this.pageManager.put("current", Math.min(this.pageManager.get("current"), this.pageManager.get("max")));
 
 			try {
 				List<Material> sublist = list.subList((this.pageManager.get("current") - 1) * 36, Math.min(this.pageManager.get("current") * 36, list.size()));
@@ -98,8 +81,6 @@ public final class CustomInventory {
 			} catch (RuntimeException e) {
 				Main.getInstance().getLogger().warning("Failed to display item list for " + player.getName() + ": " + e);
 			}
-
-			this.pageManager.put("max", (int) Math.floor(list.size() / 36) + 1);
 		};
 
 		this.pageManager.put("max", 1);
