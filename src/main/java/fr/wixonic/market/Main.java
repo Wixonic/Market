@@ -17,10 +17,9 @@ public final class Main extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		Main.instance = this;
-
+		
+		this.saveDefaultConfig();
 		Main.configManager = new ConfigurationManager(this.getConfig());
-		Main.configManager.fillDefault();
-		this.saveConfig();
 
 		CustomSkull.presets.put("leftArrow", new CustomSkull("Back").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWYxMzNlOTE5MTlkYjBhY2VmZGMyNzJkNjdmZDg3YjRiZTg4ZGM0NGE5NTg5NTg4MjQ0NzRlMjFlMDZkNTNlNiJ9fX0="));
 		CustomSkull.presets.put("doubleBackward", new CustomSkull("First").setTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGMzMDFhMTdjOTU1ODA3ZDg5ZjljNzJhMTkyMDdkMTM5M2I4YzU4YzRlNmU0MjBmNzE0ZjY5NmE4N2ZkZCJ9fX0="));

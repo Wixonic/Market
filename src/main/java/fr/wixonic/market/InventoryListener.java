@@ -43,7 +43,7 @@ public class InventoryListener implements Listener {
 						break;
 
 					case 1:
-						// playerInventory.first();
+						playerInventory.first();
 						break;
 
 					case 2:
@@ -51,7 +51,7 @@ public class InventoryListener implements Listener {
 						break;
 
 					case 3:
-						playerInventory.navigateTo("player");
+						playerInventory.navigateTo("@player");
 						break;
 
 					case 4:
@@ -59,7 +59,7 @@ public class InventoryListener implements Listener {
 						break;
 
 					case 5:
-						// playerInventory.last();
+						playerInventory.last();
 						break;
 
 					case 6:
@@ -76,6 +76,22 @@ public class InventoryListener implements Listener {
 
 					case 9:
 						playerInventory.navigateTo("farming");
+						break;
+
+					case 10:
+						playerInventory.navigateTo("blocks");
+						break;
+
+					case 11:
+						playerInventory.navigateTo("special");
+						break;
+
+					case 12:
+						playerInventory.navigateTo("other");
+						break;
+						
+					case 13:
+						playerInventory.navigateTo(e.getCurrentItem().getType().name());
 						break;
 				}
 

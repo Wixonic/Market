@@ -13,10 +13,6 @@ public final class ConfigurationManager {
 		this.config = pluginConfig;
 	}
 
-	public void fillDefault() {
-		Main.getInstance().saveDefaultConfig();
-	}
-
 	public boolean getBoolean(String key) {
 		return this.config.getBoolean(key);
 	}

@@ -1,3 +1,56 @@
 # Configuration file for WixMarket
 
-database-initialized: false # DO NOT change, except if you want to reset the database
+# DO NOT change, except if you want to reset the database
+database-initialized: false
+
+# list of all items included in the market
+items:
+    valuables:
+        - coal
+        - raw_copper
+        - copper_ingot
+        - raw_iron
+        - iron_ingot
+        - redstone
+        - lapis_lazuli
+        - raw_gold
+        - gold_ingot
+        - amethyst_shard
+        - diamond
+        - emerald
+        - ancient_debris
+        - netherite_scrap
+        - netherite_ingot
+    mobdrops:
+        - egg
+        - feather
+        - leather
+        - bone
+        - blaze_rod
+    farming:
+        - wheat_seeds
+        - wheat
+        - bread
+        - carrot
+        - potato
+        - beetroot_seeds
+        - beetroot
+        - sweet_berries
+        - pumpkin_seeds
+        - pumpkin
+        - melon_seeds
+        - melon_slice
+        - kelp
+        - sugar_cane
+        - chorus_fruit
+        - brown_mushroom
+        - red_mushroom
+        - nether_wart
+        - bone_meal
+    blocks:
+        - bone_block
+    special:
+        - elytra
+        - nether_star
+    other:
+        - 

@@ -5,11 +5,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public final class CustomInventory {
@@ -25,6 +23,7 @@ public final class CustomInventory {
 		index.put("blocks", "Building Blocks");
 		index.put("special", "Special");
 		index.put("other", "Other");
+		index.put("@player", "@player");
 	}
 
 	private final Player player;
@@ -38,7 +37,7 @@ public final class CustomInventory {
 		this.player = player;
 
 		this.pageManager.put("current", 1);
-		this.pageManager.put("max", 5);
+		this.pageManager.put("max", 1);
 
 		this.display();
 	}
@@ -68,23 +67,65 @@ public final class CustomInventory {
 			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
 		};
 
-		Consumer<String> display = (String category) -> {
-			switch (category) {
-				// Display items
+		Consumer<String> itemList = (String category) -> {
+			ArrayList<Material> list = new ArrayList<>();
+
+			Consumer<String> add = (String categoryName) -> {
+				List<String> categoryList = Main.configManager.getList("items." + categoryName);
+				
+				Bukkit.getLogger().info(categoryList.toString());
+				
+				for (String item : categoryList) {
+					Material material = Material.getMaterial(item);
+					Bukkit.getLogger().info(material.toString());
+					if (material != null) list.add(material);
+				}
+			};
+
+			if (category.equals("all")) {
+				add.accept("valuables");
+				add.accept("mobdrops");
+				add.accept("farming");
+				add.accept("blocks");
+				add.accept("special");
+				add.accept("other");
+			} else {
+				add.accept(category);
 			}
+			
+			try {
+				List<Material> sublist = list.subList((this.pageManager.get("current") - 1) * 36, Math.min(this.pageManager.get("current") * 36, list.size()));
+				
+				for (int x = 0; x < sublist.size(); ++x) {
+					this.inventory.setItem(x + 9, new CustomButton(sublist.get(x), 13, sublist.get(x).name()).itemStack);
+				}
+			} catch (RuntimeException e) {
+				Main.getInstance().getLogger().warning("Failed to display item list for " + player.getName() + ": " + e);
+			}
+
+			this.pageManager.put("max", (int) Math.ceil(list.size() / 36));
 		};
+
+		this.pageManager.put("max", 1);
 
 		if (this.current.equals("market")) {
 			this.history.clear();
 			categories.run();
-		} else if (false) {
+			this.pageManager.put("current", 1);
+		} else if (this.current == "@player") {
+			// Player page
+		} else if (CustomInventory.index.containsKey(this.current)) {
+			this.pageManager.put("current", 1);
 			this.history.clear();
-			this.history.add("Market");
+			this.history.add("market");
 
 			categories.run();
-			display.accept(this.current);
+			itemList.accept(this.current);
+			this.pageManager.put("current", 1);
 		} else {
 			Material item = Material.getMaterial(this.current);
+			
+			this.pageManager.put("current", 1);
 		}
 
 		this.history.add(this.current);
@@ -97,7 +138,7 @@ public final class CustomInventory {
 			this.inventory.setItem(48, new CustomButton(CustomSkull.presets.get("backward"), 2, "Previous").itemStack);
 		}
 
-		this.inventory.setItem(49, new CustomButton(new CustomSkull("You").setPlayer(player), 3, "You").itemStack);
+		if (this.current != "@player") this.inventory.setItem(49, new CustomButton(new CustomSkull("You").setPlayer(player), 3, "You").itemStack);
 
 		if (this.pageManager.get("current") < this.pageManager.get("max")) {
 			this.inventory.setItem(50, new CustomButton(CustomSkull.presets.get("forward"), 4, "Next").itemStack);
@@ -124,7 +165,7 @@ public final class CustomInventory {
 	}
 
 	public String getTitle() {
-		return this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "");
+		return (this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "")).replaceAll("\\@player", player.getDisplayName());
 	}
 
 	public void navigateTo(String name) {
@@ -133,26 +174,32 @@ public final class CustomInventory {
 	}
 
 	public void back() {
-		if (this.history.size() > 2) this.history.remove(history.size() - 1);
+		this.history.remove(history.size() - 1);
 		this.current = this.history.remove(history.size() - 1);
+		this.display();
+	}
 
+	public void first() {
+		this.pageManager.put("current", 1);
+		this.current = this.history.remove(history.size() - 1);
 		this.display();
 	}
 
 	public void previous() {
-		if (this.pageManager.get("current") > 1) this.pageManager.put("current", this.pageManager.get("current") - 1);
-
-		this.history.remove(history.size() - 1);
-
+		this.pageManager.put("current", this.pageManager.get("current") - 1);
+		this.current = this.history.remove(history.size() - 1);
 		this.display();
 	}
 
 	public void next() {
-		if (this.pageManager.get("current") < this.pageManager.get("max"))
-			this.pageManager.put("current", this.pageManager.get("current") + 1);
+		this.pageManager.put("current", this.pageManager.get("current") + 1);
+		this.current = this.history.remove(history.size() - 1);
+		this.display();
+	}
 
-		this.history.remove(history.size() - 1);
-
+	public void last() {
+		this.pageManager.put("current", this.pageManager.get("max"));
+		this.current = this.history.remove(history.size() - 1);
 		this.display();
 	}
 }

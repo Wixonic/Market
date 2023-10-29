@@ -10,16 +10,38 @@ website: https://github.com/Wixonic/Market
 commands:
     market:
         aliases: mk
-        description: Shows the market interface
+        description: Everything about the market
         usage: /<command>
         permission: market.access
-        permission-message: You do not have permission to use this command.
 
 permissions:
     market.access:
         description: Market access permissions
         default: true
+        
+    market.buy:
+        description: Market buying permissions
+        default: true
+        children:
+            market.access: true
+        
+    market.sell:
+        description: Allows to sell items in the market
+        default: true
+        children:
+            market.access: true
+        
+    market.request:
+        description: Allows to create buying and selling requests
+        default: true
+        children:
+            market.access: true
 
     market.*:
         description: Wildcard permission
         default: op
+        children:
+            market.access: true
+            market.buy: true
+            market.sell: true
+            market.request: true

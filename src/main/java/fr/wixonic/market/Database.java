@@ -1,6 +1,7 @@
 package fr.wixonic.market;
 
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public final class Database {
 	public final static Map<String, List<String>> compatibilityTable = new HashMap<>();
-	public final static String latestVersion = "v5";
+	public final static String latestVersion = "v6";
 	public final static Path location = Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "market.db");
 
 	static {
@@ -91,7 +92,9 @@ public final class Database {
 			this.set(path, 0);
 			return 0;
 		} else {
-			return Math.toIntExact((long) value);
+			if (value instanceof Integer) return (int) value;
+			else if (value instanceof Long) return Math.toIntExact((long) value);
+			else throw new RuntimeException("Invalid type of \"" + path + "\": " + value);
 		}
 	}
 
