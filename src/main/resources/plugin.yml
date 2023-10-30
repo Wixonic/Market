@@ -11,11 +11,10 @@ commands:
     market:
         aliases: mk
         description: Everything about the market
-        usage: /<command>
-        permission: market.access
+        permission: market
 
 permissions:
-    market.access:
+    market:
         description: Market access permissions
         default: true
         
@@ -23,25 +22,25 @@ permissions:
         description: Market buying permissions
         default: true
         children:
-            market.access: true
+            market: true
         
     market.sell:
         description: Allows to sell items in the market
         default: true
         children:
-            market.access: true
+            market: true
         
     market.request:
         description: Allows to create buying and selling requests
         default: true
         children:
-            market.access: true
+            market: true
 
-    market.*:
-        description: Wildcard permission
+    market.manage:
+        description: Allows to manage the market
         default: op
         children:
-            market.access: true
+            market: true
             market.buy: true
             market.sell: true
             market.request: true

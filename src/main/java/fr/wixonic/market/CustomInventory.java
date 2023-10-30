@@ -67,7 +67,7 @@ public final class CustomInventory {
 		};
 
 		Consumer<String> itemList = (String category) -> {
-			List<Material> list = Categories.get(category);
+			List<Material> list = ItemManager.get(category);
 
 			this.pageManager.put("max", (int) Math.floor(list.size() / 36) + 1);
 			this.pageManager.put("current", Math.min(this.pageManager.get("current"), this.pageManager.get("max")));
@@ -83,8 +83,9 @@ public final class CustomInventory {
 			}
 		};
 
+		this.title = this.current;
 		this.pageManager.put("max", 1);
-
+		
 		if (this.current.equals("market")) {
 			this.history.clear();
 
@@ -103,8 +104,9 @@ public final class CustomInventory {
 			itemList.accept(this.current);
 		} else {
 			Material item = Material.getMaterial(this.current);
-
+			
 			this.pageManager.put("current", 1);
+			this.title = ItemManager.getNameFor(item.name()) != null ? ItemManager.getNameFor(item.name()) : "Unknown";
 		}
 
 		this.history.add(this.current);
@@ -128,9 +130,13 @@ public final class CustomInventory {
 		this.inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Main.getInstance().getDescription().getName() + " v" + Main.getInstance().getDescription().getVersion()).itemStack);
 
 		try {
-			this.title = CustomInventory.index.getOrDefault(this.history.get(this.history.size() - 2), "Unknown") + " → " + CustomInventory.index.getOrDefault(this.current, "Unknown");
-		} catch (Exception ignored) {
-			this.title = "Market";
+			if (this.inventory.getSize() > 1) {
+				String previousID = this.history.get(this.history.size() - 2);
+				this.title = CustomInventory.index.getOrDefault(previousID, (ItemManager.getNameFor(previousID) != null ? ItemManager.getNameFor(previousID) : "Unknown")) + " → " + CustomInventory.index.getOrDefault(this.current, this.title);
+			} else this.title = CustomInventory.index.getOrDefault(this.current, this.title);
+		} catch (Exception e) {
+			Bukkit.getLogger().warning(e.getMessage());
+			this.title = "Error";
 		}
 	}
 
@@ -144,7 +150,7 @@ public final class CustomInventory {
 	}
 
 	public String getTitle() {
-		return (this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "")).replaceAll("\\@player", player.getDisplayName());
+		return (this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "")).replaceAll("\\@player", player.getName());
 	}
 
 	public void navigateTo(String name) {

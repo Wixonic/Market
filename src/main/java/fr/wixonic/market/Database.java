@@ -43,8 +43,7 @@ public final class Database {
 		this.version = Database.latestVersion;
 		this.set("core.version", this.version);
 		Files.writeString(Database.location, this.data.toJSONString(), StandardCharsets.UTF_8);
-
-		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::save, 0L, (long) Main.configManager.getInt("auto-save"), TimeUnit.SECONDS);
+		Main.configManager.set("database-initialized", true);
 	}
 
 	public void load() throws IOException, ParseException, RuntimeException {
@@ -58,8 +57,6 @@ public final class Database {
 			Main.getInstance().getLogger().severe("Invalid database version, please refer to the wiki (https://github.com/Wixonic/Market/wiki/Database-Compatibility)");
 			Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 		}
-
-		Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(this::save, 0L, (long) Main.configManager.getInt("auto-save"), TimeUnit.SECONDS);
 	}
 
 	public void save() {

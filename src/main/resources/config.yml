@@ -1,4 +1,60 @@
 # Configuration file for WixMarket
 
 database-initialized: false # DO NOT change, except if you want to reset the database
-auto-save: 5 # Time between database saving in seconds, do not change except if you're experiencing problems
+
+# List of available items in the market, with all the data
+items:
+    DIRT: # Values are listed in https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html; Legacy items 
+        category: blocks # Can be valuables, mobdrops, farming, blocks, special or other
+        name: Dirt # Will be displayed in the inventory title
+        price: 1 # This price will be recommended to the user
+            
+    COBBLESTONE:
+        category: blocks
+        name: Cobblestone
+        price: 3
+        
+    COPPER_INGOT:
+        category: valuables
+        name: Copper Ingot
+        price: 20
+    
+    IRON_INGOT:
+        category: valuables
+        name: Iron Ingot
+        price: 45
+        
+    GOLD_INGOT:
+        category: valuables
+        name: Gold Ingot
+        price: 60
+    
+    LAPIS_LAZULI:
+        category: valuables
+        name: Lapis Lazuli
+        price: 25
+    
+    REDSTONE:
+        category: valuables
+        name: Redstone
+        price: 10
+    
+    DIAMOND:
+        category: valuables
+        name: Diamond
+        price: 450
+    
+    EMERALD:
+        category: valuables
+        name: Emerald
+        price: 500
+    
+    NETHERITE_SCRAP:
+        category: valuables
+        name: Netherite Scrap
+        price: 1190
+    
+    NETHERITE_INGOT:
+        category: valuables
+        name: Netherite
+        price: 5000
