@@ -53,9 +53,8 @@ public final class CustomInventory {
 	}
 
 	private void display() {
-		for (int x = 0; x < this.inventory.getSize(); ++x)
-			this.inventory.setItem(x, new CustomButton(Material.BLACK_STAINED_GLASS_PANE, -1, ChatColor.RESET.toString()).itemStack);
-
+		this.inventory.clear();
+		
 		Runnable categories = () -> {
 			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
 			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
@@ -85,7 +84,7 @@ public final class CustomInventory {
 
 		this.title = this.current;
 		this.pageManager.put("max", 1);
-		
+
 		if (this.current.equals("market")) {
 			this.history.clear();
 
@@ -104,7 +103,7 @@ public final class CustomInventory {
 			itemList.accept(this.current);
 		} else {
 			Material item = Material.getMaterial(this.current);
-			
+
 			this.pageManager.put("current", 1);
 			this.title = ItemManager.getNameFor(item.name()) != null ? ItemManager.getNameFor(item.name()) : "Unknown";
 		}
@@ -130,7 +129,7 @@ public final class CustomInventory {
 		this.inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Main.getInstance().getDescription().getName() + " v" + Main.getInstance().getDescription().getVersion()).itemStack);
 
 		try {
-			if (this.inventory.getSize() > 1) {
+			if (this.history.size() > 1) {
 				String previousID = this.history.get(this.history.size() - 2);
 				this.title = CustomInventory.index.getOrDefault(previousID, (ItemManager.getNameFor(previousID) != null ? ItemManager.getNameFor(previousID) : "Unknown")) + " → " + CustomInventory.index.getOrDefault(this.current, this.title);
 			} else this.title = CustomInventory.index.getOrDefault(this.current, this.title);

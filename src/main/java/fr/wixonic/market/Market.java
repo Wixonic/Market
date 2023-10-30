@@ -105,7 +105,7 @@ public final class Market implements CommandExecutor, TabCompleter {
 				case 2:
 					switch (args[0]) {
 						case "config":
-							if ("reset".startsWith(args[1])) list.add("reset");
+							if ("reset".startsWith(args[1]) && player.hasPermission("market.manage")) list.add("reset");
 							break;
 					}
 			}
