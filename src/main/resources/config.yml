@@ -14,9 +14,14 @@ items:
         name: Cobblestone
         price: 3
         
+    SPONGE:
+        category: special
+        name: Sponge
+        price: 400
+        
     COPPER_INGOT:
         category: valuables
-        name: Copper Ingot
+        name: Copp. Ingot
         price: 20
     
     IRON_INGOT:
@@ -51,7 +56,7 @@ items:
     
     NETHERITE_SCRAP:
         category: valuables
-        name: Netherite Scrap
+        name: Neth. Scrap
         price: 1190
     
     NETHERITE_INGOT:
