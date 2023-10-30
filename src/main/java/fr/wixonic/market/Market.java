@@ -1,6 +1,8 @@
 package fr.wixonic.market;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,24 +23,30 @@ public final class Market implements CommandExecutor, TabCompleter {
 	public final Database database;
 
 	public Market() {
-		database = new Database();
+		this.database = new Database();
 
 		if (Main.configManager.getBoolean("database-initialized")) {
 			try {
-				database.load();
+				this.database.load();
 			} catch (Exception e) {
 				Main.getInstance().getLogger().severe("Failed to connect to database at \"" + Database.location + "\" - " + e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 			}
 		} else {
 			try {
-				database.initialize();
+				this.database.initialize();
 				Main.configManager.set("database-initialized", true);
 				Main.getInstance().saveDefaultConfig();
 			} catch (Exception e) {
 				Main.getInstance().getLogger().severe("Failed to create the database at \"" + Database.location + "\" - " + e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 			}
+		}
+	}
+	
+	public void buy(Player player, Material item, Double price) {
+		if (player.hasPermission("market.buy") && ItemManager.list.contains(item)) {
+			Main.market.database.getRequests("items." + item.name() + ".buy.requests");
 		}
 	}
 
@@ -61,19 +69,19 @@ public final class Market implements CommandExecutor, TabCompleter {
 								Main.getInstance().saveDefaultConfig();
 								Main.getInstance().reloadConfig();
 								ItemManager.reload();
-								player.sendMessage("§6The configuration file has been reset. A backup was saved at " + Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"));
+								player.sendMessage(ChatColor.YELLOW + "The configuration file has been reset. A backup was saved at " + Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"));
 							} catch (IOException ignored) {
-								player.sendMessage("§cFailed to create backup, please retry");
+								player.sendMessage(ChatColor.RED + "Failed to create backup, please retry");
 							}
 							break;
 
 						default:
-							player.sendMessage("§cThis command doesn't exist");
+							player.sendMessage(ChatColor.RED + "This command doesn't exist");
 							break;
 					}
 				} else {
 					Main.getInstance().getLogger().info(player.getName() + " tried to use \"" + cmd.getName() + " " + String.join(" ", args) + "\" without permission");
-					player.sendMessage("§cYou don't have permission to use this commmand.");
+					player.sendMessage(ChatColor.RED + "You don't have permission to use this commmand.");
 				}
 			}
 

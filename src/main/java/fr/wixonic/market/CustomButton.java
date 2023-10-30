@@ -1,11 +1,13 @@
 package fr.wixonic.market;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public final class CustomButton {
 	public final ItemStack itemStack;
@@ -44,7 +46,7 @@ public final class CustomButton {
 
 	public void setLore(String... lore) {
 		ItemMeta itemMeta = this.itemStack.getItemMeta();
-		ArrayList<String> itemLore = new ArrayList<String>();
+		List<String> itemLore = new ArrayList<>();
 		Collections.addAll(itemLore, lore);
 		itemMeta.setLore(itemLore);
 		this.itemStack.setItemMeta(itemMeta);
@@ -53,7 +55,7 @@ public final class CustomButton {
 	private void setUp(int id, String displayName) {
 		ItemMeta itemMeta = this.itemStack.getItemMeta();
 		itemMeta.setCustomModelData(id);
-		if (displayName != null) itemMeta.setDisplayName(displayName);
+		if (displayName != null) itemMeta.setDisplayName(ChatColor.RESET + displayName);
 		this.itemStack.setItemMeta(itemMeta);
 	}
 }

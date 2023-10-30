@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -100,6 +97,17 @@ public final class Database {
 			if (value instanceof Integer) return (int) value;
 			else if (value instanceof Long) return Math.toIntExact((long) value);
 			else throw new RuntimeException("Invalid type of \"" + path + "\": " + value);
+		}
+	}
+
+	public List<Request> getRequests(String path) {
+		Object value = this.data.get(path);
+
+		if (value == null) {
+			this.set(path, new ArrayList<Request>());
+			return new ArrayList<Request>();
+		} else {
+			return (List<Request>) value;
 		}
 	}
 

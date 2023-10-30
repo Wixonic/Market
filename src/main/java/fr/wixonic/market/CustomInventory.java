@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -14,15 +15,15 @@ public final class CustomInventory {
 	private static final Map<UUID, CustomInventory> inventories = new HashMap<>();
 
 	static {
-		index.put("market", "Market");
-		index.put("all", "List");
-		index.put("valuables", "Ores & Valuables");
-		index.put("mobdrops", "Mobdrops");
-		index.put("farming", "Farming & Food");
-		index.put("blocks", "Building Blocks");
-		index.put("special", "Special");
-		index.put("other", "Other");
-		index.put("@player", "@player");
+		CustomInventory.index.put("market", "Market");
+		CustomInventory.index.put("all", "List");
+		CustomInventory.index.put("valuables", "Ores & Valuables");
+		CustomInventory.index.put("mobdrops", "Mobdrops");
+		CustomInventory.index.put("farming", "Farming & Food");
+		CustomInventory.index.put("blocks", "Building Blocks");
+		CustomInventory.index.put("special", "Special");
+		CustomInventory.index.put("other", "Other");
+		CustomInventory.index.put("@player", "@player");
 	}
 
 	private final Player player;
@@ -56,13 +57,13 @@ public final class CustomInventory {
 		this.inventory.clear();
 		
 		Runnable categories = () -> {
-			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", Main.market.database.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", Main.market.database.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", Main.market.database.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", Main.market.database.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
 		};
 
 		Consumer<String> itemList = (String category) -> {
@@ -103,7 +104,9 @@ public final class CustomInventory {
 			itemList.accept(this.current);
 		} else {
 			Material item = Material.getMaterial(this.current);
-
+			
+			this.inventory.setItem(4, new CustomButton(item, -1).itemStack);
+			
 			this.pageManager.put("current", 1);
 			this.title = ItemManager.getNameFor(item.name()) != null ? ItemManager.getNameFor(item.name()) : "Unknown";
 		}
