@@ -20,7 +20,7 @@ public final class ItemManager {
 		ItemManager.categories = new HashMap<>();
 		ItemManager.list = new ArrayList<>();
 		ItemManager.items = Main.configManager.getKeys("items");
-		
+
 		for (String category : CustomInventory.index.keySet()) ItemManager.categories.put(category, new ArrayList<>());
 
 		for (Material material : Material.values()) {
@@ -54,7 +54,23 @@ public final class ItemManager {
 		return Main.configManager.getString("items." + id + ".category");
 	}
 
+	public static String getCategoryFor(Material material) {
+		return Main.configManager.getString("items." + material.name() + ".category");
+	}
+
 	public static String getNameFor(String id) {
 		return Main.configManager.getString("items." + id + ".name");
+	}
+
+	public static String getNameFor(Material material) {
+		return Main.configManager.getString("items." + material.name() + ".name");
+	}
+
+	public static double getSuggestedPriceFor(String id) {
+		return Double.parseDouble(Main.configManager.getString("items." + id + ".price"));
+	}
+
+	public static double getSuggestedPriceFor(Material material) {
+		return Double.parseDouble(Main.configManager.getString("items." + material.name() + ".price"));
 	}
 }

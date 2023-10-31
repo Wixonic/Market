@@ -57,13 +57,13 @@ public final class CustomInventory {
 		this.inventory.clear();
 		
 		Runnable categories = () -> {
-			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", ChatColor.GRAY + Main.market.database.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", ChatColor.GRAY + this.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", ChatColor.GRAY + this.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", ChatColor.GRAY + this.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", ChatColor.GRAY + this.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", ChatColor.GRAY + this.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", ChatColor.GRAY + this.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", ChatColor.GRAY + this.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
 		};
 
 		Consumer<String> itemList = (String category) -> {
@@ -188,5 +188,17 @@ public final class CustomInventory {
 		this.pageManager.put("current", this.pageManager.get("max"));
 		this.current = this.history.remove(history.size() - 1);
 		this.display();
+	}
+
+	public String count(int buying, int selling, String type) {
+		if (buying > 0 && selling > 0) {
+			return (buying + selling) + " " + type + "s - " + count(buying, 0, "buying " + type) + ", " + count(0, selling, "selling " + type);
+		} else if (buying > 0) {
+			return buying > 1 ? buying + type + "s" : "One " + type;
+		} else if (selling > 0) {
+			return selling > 1 ? selling + type + "s" : "One " + type;
+		} else {
+			return "No " + type;
+		}
 	}
 }

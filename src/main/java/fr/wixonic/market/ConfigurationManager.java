@@ -40,4 +40,8 @@ public class ConfigurationManager {
 	public void set(String key, Object value) {
 		this.config.set(key, value);
 	}
+	
+	public void remove(String key) {
+		this.config.set(key, null);
+	}
 }

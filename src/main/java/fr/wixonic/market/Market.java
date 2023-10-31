@@ -14,11 +14,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 public final class Market implements CommandExecutor, TabCompleter {
 	public final Database database;
@@ -117,26 +115,61 @@ public final class Market implements CommandExecutor, TabCompleter {
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = ((Player) sender).getPlayer();
-
 			List<String> list = new ArrayList<>();
+
+			Consumer<String> displayItems = (String name) -> {
+				for (Material item : ItemManager.list)
+					if (item.name().startsWith(name.toUpperCase())) list.add(item.name().toLowerCase());
+			};
 
 			switch (args.length) {
 				case 0:
-					if (player.hasPermission("market")) list.add("view");
+					if (player.hasPermission("market.buy")) list.add("buy");
 					if (player.hasPermission("market.manage")) list.add("config");
+					if (player.hasPermission("market.sell")) list.add("sell");
+					if (player.hasPermission("market")) list.add("view");
 					break;
 
 				case 1:
-					if ("view".startsWith(args[0]) && player.hasPermission("market")) list.add("view");
+					if ("buy".startsWith(args[0]) && player.hasPermission("market.buy")) list.add("buy");
 					if ("config".startsWith(args[0]) && player.hasPermission("market.manage")) list.add("config");
+					if ("sell".startsWith(args[0]) && player.hasPermission("market.sell")) list.add("sell");
+					if ("view".startsWith(args[0]) && player.hasPermission("market")) list.add("view");
 					break;
 
 				case 2:
 					switch (args[0]) {
+						case "buy":
+							if (player.hasPermission("market.buy")) displayItems.accept(args[1]);
+							break;
+
 						case "config":
 							if ("reset".startsWith(args[1]) && player.hasPermission("market.manage")) list.add("reset");
 							break;
+
+						case "sell":
+							if (player.hasPermission("market.sell")) displayItems.accept(args[1]);
+							break;
 					}
+					break;
+
+				case 3:
+					Material item;
+
+					switch (args[0]) {
+						case "buy":
+							item = Material.getMaterial(args[1].toUpperCase());
+							if (ItemManager.list.contains(item) && player.hasPermission("market.buy"))
+								list.add(String.valueOf(ItemManager.getSuggestedPriceFor(item)));
+							break;
+
+						case "sell":
+							item = Material.getMaterial(args[1].toUpperCase());
+							if (ItemManager.list.contains(item) && player.hasPermission("market.sell"))
+								list.add(String.valueOf(ItemManager.getSuggestedPriceFor(item)));
+							break;
+					}
+					break;
 			}
 
 			return list;
