@@ -4,6 +4,9 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public final class Main extends JavaPlugin {
 	public static ConfigurationManager configManager;
 	public static InventoryListener inventoryListener;

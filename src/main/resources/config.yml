@@ -1,6 +1,7 @@
 # Configuration file for WixMarket
 
 database-initialized: false # DO NOT change, except if you want to reset the database
+tax: 0.15
 
 # List of available items in the market, with all the data
 items:

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,11 +45,11 @@ public final class Market implements CommandExecutor, TabCompleter {
 		}
 	}
 
-	public void buy(Player player, Material item, Double price, int amount) {
+	public void buy(Player player, Material item, double price, int amount) {
 		if (player.hasPermission("market.buy") && ItemManager.list.contains(item)) {
-			List<Request> requests = Main.market.database.getRequests("items." + item.name() + ".buy.requests");
+			List<String> requests = Main.market.database.getList("items." + item.name() + ".buy");
 
-			Collections.sort(requests, new Comparator<Request>() {
+			/* Collections.sort(requests, new Comparator<Request>() {
 				@Override
 				public int compare(Request request1, Request request2) {
 					return Double.compare(request1.price, request2.price);
@@ -57,15 +58,16 @@ public final class Market implements CommandExecutor, TabCompleter {
 			
 			Request request = requests.get(0);
 
-			if (request.price >= price) {
-				String trade = request.accept(player);
-				if (trade == null) Main.getInstance().getLogger().info(player.getName() + " bought" + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
-				else player.sendMessage(ChatColor.RED + "Failed to buy: " + trade);
-			} else if (player.hasPermission("market.request")) {
-				String save = Market.saveRequest(new Request(amount, player, item, price, RequestType.BUY));
-				if (save == null) Main.getInstance().getLogger().info(player.getName() + " created a buying request of " + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
-				else player.sendMessage(ChatColor.RED + "Failed to create request: " + trade);
-			}
+			if (request.price >= price) request.accept(player, amount);
+			else if (player.hasPermission("market.request")) {
+				if (Main.vault.getBalance(player) >= price * amount) {
+					request = new Request(amount, player, item, price, RequestType.BUY);
+					Main.vault.withdrawPlayer(player, request.amount * request.price);
+					
+					Main.getInstance().getLogger().info(player.getName() + " created a buying request of " + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
+					player.sendMessage(ChatColor.GOLD + "You created a buying request of " + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
+				} else player.sendMessage(ChatColor.RED + "Failed to create request: You need $" + request.amount * request.price);
+			} */
 		} else player.sendMessage(ChatColor.RED + "You can't buy this item");
 	}
 
