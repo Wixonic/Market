@@ -1,6 +1,7 @@
 package fr.wixonic.market;
 
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Main extends JavaPlugin {
@@ -8,16 +9,31 @@ public final class Main extends JavaPlugin {
 	public static InventoryListener inventoryListener;
 	public static PlayerJoinListener playerJoinListener;
 	public static Market market;
+	public static Economy vault;
 	private static Main instance;
 
 	public static Main getInstance() {
 		return Main.instance;
 	}
 
+	public boolean setupEconomy() {
+		if (this.getServer().getPluginManager().getPlugin("Vault") == null) return false;
+		RegisteredServiceProvider<Economy> serviceProvider = getServer().getServicesManager().getRegistration(Economy.class);
+		if (serviceProvider == null) return false;
+		Main.vault = serviceProvider.getProvider();
+		return Main.vault != null;
+	}
+
 	@Override
 	public void onEnable() {
 		Main.instance = this;
-		
+
+		if (!this.setupEconomy()) {
+			this.getLogger().severe(String.format("Disabled due to no Vault dependency found"));
+			this.getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+
 		this.saveDefaultConfig();
 		Main.configManager = new ConfigurationManager(this.getConfig());
 

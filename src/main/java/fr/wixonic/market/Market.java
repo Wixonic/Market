@@ -8,15 +8,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class Market implements CommandExecutor, TabCompleter {
@@ -43,18 +43,37 @@ public final class Market implements CommandExecutor, TabCompleter {
 			}
 		}
 	}
-	
-	public void buy(Player player, Material item, Double price) {
+
+	public void buy(Player player, Material item, Double price, int amount) {
 		if (player.hasPermission("market.buy") && ItemManager.list.contains(item)) {
-			Main.market.database.getRequests("items." + item.name() + ".buy.requests");
-		}
+			List<Request> requests = Main.market.database.getRequests("items." + item.name() + ".buy.requests");
+
+			Collections.sort(requests, new Comparator<Request>() {
+				@Override
+				public int compare(Request request1, Request request2) {
+					return Double.compare(request1.price, request2.price);
+				}
+			});
+			
+			Request request = requests.get(0);
+
+			if (request.price >= price) {
+				String trade = request.accept(player);
+				if (trade == null) Main.getInstance().getLogger().info(player.getName() + " bought" + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
+				else player.sendMessage(ChatColor.RED + "Failed to buy: " + trade);
+			} else if (player.hasPermission("market.request")) {
+				String save = Market.saveRequest(new Request(amount, player, item, price, RequestType.BUY));
+				if (save == null) Main.getInstance().getLogger().info(player.getName() + " created a buying request of " + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
+				else player.sendMessage(ChatColor.RED + "Failed to create request: " + trade);
+			}
+		} else player.sendMessage(ChatColor.RED + "You can't buy this item");
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (sender instanceof Player) {
 			Player player = ((Player) sender).getPlayer();
-			
+
 			if (cmd.getName().equals("market")) {
 				if ((args.length == 0 || args[0].equals("view")) && player.hasPermission("market")) {
 					CustomInventory playerInventory = CustomInventory.getFor(player);
@@ -69,7 +88,7 @@ public final class Market implements CommandExecutor, TabCompleter {
 								Main.getInstance().saveDefaultConfig();
 								Main.getInstance().reloadConfig();
 								ItemManager.reload();
-								player.sendMessage(ChatColor.YELLOW + "The configuration file has been reset. A backup was saved at " + Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"));
+								player.sendMessage(ChatColor.GOLD + "The configuration file has been reset. A backup was saved at " + Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"));
 							} catch (IOException ignored) {
 								player.sendMessage(ChatColor.RED + "Failed to create backup, please retry");
 							}
@@ -81,7 +100,7 @@ public final class Market implements CommandExecutor, TabCompleter {
 					}
 				} else {
 					Main.getInstance().getLogger().info(player.getName() + " tried to use \"" + cmd.getName() + " " + String.join(" ", args) + "\" without permission");
-					player.sendMessage(ChatColor.RED + "You don't have permission to use this commmand.");
+					player.sendMessage(ChatColor.RED + "You can't use this commmand.");
 				}
 			}
 
