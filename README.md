@@ -1,6 +1,6 @@
 [Spigot Page](https://www.spigotmc.org/resources/wixmarket.113171/)
 
-[![Last stable release](https://img.shields.io/github/v/release/Wixonic/Market?display_name=tag&label=Last%20stable%20release)](https://github.com/Wixonic/Market/releases) [![Last release](https://img.shields.io/github/v/tag/Wixonic/Market?display_name=tag&label=Last%20pre-release)](https://github.com/Wixonic/Market/releases)<br />
+[![Last stable release](https://img.shields.io/github/v/release/Wixonic/Market?display_name=tag&label=Last%20stable%20release)](https://github.com/Wixonic/Market/releases) [![Last release](https://img.shields.io/github/v/tag/Wixonic/Market?display_name=tag&label=Last%20pre-release)](https://github.com/Wixonic/Market/tags)<br />
 [![Wakatime](https://wakatime.com/badge/github/Wixonic/Market.svg?style=flat)](https://wakatime.com/badge/github/Wixonic/Market)
 
 - [Wiki](https://github.com/Wixonic/Market/wiki)
