@@ -55,7 +55,8 @@ public final class CustomButton {
 	private void setUp(int id, String displayName) {
 		ItemMeta itemMeta = this.itemStack.getItemMeta();
 		itemMeta.setCustomModelData(id);
-		if (displayName != null) itemMeta.setDisplayName(ChatColor.RESET + displayName);
+		if (displayName != null)
+			itemMeta.setDisplayName(ChatColor.RESET + displayName);
 		this.itemStack.setItemMeta(itemMeta);
 	}
 }

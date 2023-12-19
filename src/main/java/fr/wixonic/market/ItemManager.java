@@ -21,7 +21,8 @@ public final class ItemManager {
 		ItemManager.list = new ArrayList<>();
 		ItemManager.items = Main.configManager.getKeys("items");
 
-		for (String category : CustomInventory.index.keySet()) ItemManager.categories.put(category, new ArrayList<>());
+		for (String category : CustomInventory.index.keySet())
+			ItemManager.categories.put(category, new ArrayList<>());
 
 		for (Material material : Material.values()) {
 			if (material.isItem() && !material.isAir() && !material.isLegacy()) {
@@ -46,8 +47,10 @@ public final class ItemManager {
 	}
 
 	public static List<Material> get(String category) {
-		if (category == "all") return ItemManager.list;
-		else return ItemManager.categories.getOrDefault(category, new ArrayList<Material>());
+		if (category == "all")
+			return ItemManager.list;
+		else
+			return ItemManager.categories.getOrDefault(category, new ArrayList<Material>());
 	}
 
 	public static String getCategoryFor(String id) {

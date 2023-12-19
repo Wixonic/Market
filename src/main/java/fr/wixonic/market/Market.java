@@ -28,7 +28,8 @@ public final class Market implements CommandExecutor, TabCompleter {
 			try {
 				this.database.load();
 			} catch (Exception e) {
-				Main.getInstance().getLogger().severe("Failed to connect to database at \"" + Database.location + "\" - " + e);
+				Main.getInstance().getLogger()
+						.severe("Failed to connect to database at \"" + Database.location + "\" - " + e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 			}
 		} else {
@@ -37,7 +38,8 @@ public final class Market implements CommandExecutor, TabCompleter {
 				Main.configManager.set("database-initialized", true);
 				Main.getInstance().saveDefaultConfig();
 			} catch (Exception e) {
-				Main.getInstance().getLogger().severe("Failed to create the database at \"" + Database.location + "\" - " + e);
+				Main.getInstance().getLogger()
+						.severe("Failed to create the database at \"" + Database.location + "\" - " + e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 			}
 		}
@@ -47,26 +49,35 @@ public final class Market implements CommandExecutor, TabCompleter {
 		if (player.hasPermission("market.buy") && ItemManager.list.contains(item)) {
 			List<String> requests = Main.market.database.getList("items." + item.name() + ".buy");
 
-			/* Collections.sort(requests, new Comparator<Request>() {
-				@Override
-				public int compare(Request request1, Request request2) {
-					return Double.compare(request1.price, request2.price);
-				}
-			});
-			
-			Request request = requests.get(0);
-
-			if (request.price >= price) request.accept(player, amount);
-			else if (player.hasPermission("market.request")) {
-				if (Main.vault.getBalance(player) >= price * amount) {
-					request = new Request(amount, player, item, price, RequestType.BUY);
-					Main.vault.withdrawPlayer(player, request.amount * request.price);
-					
-					Main.getInstance().getLogger().info(player.getName() + " created a buying request of " + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
-					player.sendMessage(ChatColor.GOLD + "You created a buying request of " + request.amount + " " + request.item.name() + " for $" + request.amount * request.price);
-				} else player.sendMessage(ChatColor.RED + "Failed to create request: You need $" + request.amount * request.price);
-			} */
-		} else player.sendMessage(ChatColor.RED + "You can't buy this item");
+			/*
+			 * Collections.sort(requests, new Comparator<Request>() {
+			 * 
+			 * @Override
+			 * public int compare(Request request1, Request request2) {
+			 * return Double.compare(request1.price, request2.price);
+			 * }
+			 * });
+			 * 
+			 * Request request = requests.get(0);
+			 * 
+			 * if (request.price >= price) request.accept(player, amount);
+			 * else if (player.hasPermission("market.request")) {
+			 * if (Main.vault.getBalance(player) >= price * amount) {
+			 * request = new Request(amount, player, item, price, RequestType.BUY);
+			 * Main.vault.withdrawPlayer(player, request.amount * request.price);
+			 * 
+			 * Main.getInstance().getLogger().info(player.getName() +
+			 * " created a buying request of " + request.amount + " " + request.item.name()
+			 * + " for $" + request.amount * request.price);
+			 * player.sendMessage(ChatColor.GOLD + "You created a buying request of " +
+			 * request.amount + " " + request.item.name() + " for $" + request.amount *
+			 * request.price);
+			 * } else player.sendMessage(ChatColor.RED +
+			 * "Failed to create request: You need $" + request.amount * request.price);
+			 * }
+			 */
+		} else
+			player.sendMessage(ChatColor.RED + "You can't buy this item");
 	}
 
 	@Override
@@ -83,12 +94,17 @@ public final class Market implements CommandExecutor, TabCompleter {
 						case "reset":
 							File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
 							try {
-								Files.copy(Path.of(configFile.getAbsolutePath()), Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"), StandardCopyOption.REPLACE_EXISTING);
+								Files.copy(Path.of(configFile.getAbsolutePath()), Path
+										.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"),
+										StandardCopyOption.REPLACE_EXISTING);
 								configFile.delete();
 								Main.getInstance().saveDefaultConfig();
 								Main.getInstance().reloadConfig();
 								ItemManager.reload();
-								player.sendMessage(ChatColor.GOLD + "The configuration file has been reset. A backup was saved at " + Path.of(Main.getInstance().getDataFolder().getAbsolutePath(), "config_backup.yml"));
+								player.sendMessage(
+										ChatColor.GOLD + "The configuration file has been reset. A backup was saved at "
+												+ Path.of(Main.getInstance().getDataFolder().getAbsolutePath(),
+														"config_backup.yml"));
 							} catch (IOException ignored) {
 								player.sendMessage(ChatColor.RED + "Failed to create backup, please retry");
 							}
@@ -99,7 +115,8 @@ public final class Market implements CommandExecutor, TabCompleter {
 							break;
 					}
 				} else {
-					Main.getInstance().getLogger().info(player.getName() + " tried to use \"" + cmd.getName() + " " + String.join(" ", args) + "\" without permission");
+					Main.getInstance().getLogger().info(player.getName() + " tried to use \"" + cmd.getName() + " "
+							+ String.join(" ", args) + "\" without permission");
 					player.sendMessage(ChatColor.RED + "You can't use this commmand.");
 				}
 			}
@@ -119,36 +136,48 @@ public final class Market implements CommandExecutor, TabCompleter {
 
 			Consumer<String> displayItems = (String name) -> {
 				for (Material item : ItemManager.list)
-					if (item.name().startsWith(name.toUpperCase())) list.add(item.name().toLowerCase());
+					if (item.name().startsWith(name.toUpperCase()))
+						list.add(item.name().toLowerCase());
 			};
 
 			switch (args.length) {
 				case 0:
-					if (player.hasPermission("market.buy")) list.add("buy");
-					if (player.hasPermission("market.manage")) list.add("config");
-					if (player.hasPermission("market.sell")) list.add("sell");
-					if (player.hasPermission("market")) list.add("view");
+					if (player.hasPermission("market.buy"))
+						list.add("buy");
+					if (player.hasPermission("market.manage"))
+						list.add("config");
+					if (player.hasPermission("market.sell"))
+						list.add("sell");
+					if (player.hasPermission("market"))
+						list.add("view");
 					break;
 
 				case 1:
-					if ("buy".startsWith(args[0]) && player.hasPermission("market.buy")) list.add("buy");
-					if ("config".startsWith(args[0]) && player.hasPermission("market.manage")) list.add("config");
-					if ("sell".startsWith(args[0]) && player.hasPermission("market.sell")) list.add("sell");
-					if ("view".startsWith(args[0]) && player.hasPermission("market")) list.add("view");
+					if ("buy".startsWith(args[0]) && player.hasPermission("market.buy"))
+						list.add("buy");
+					if ("config".startsWith(args[0]) && player.hasPermission("market.manage"))
+						list.add("config");
+					if ("sell".startsWith(args[0]) && player.hasPermission("market.sell"))
+						list.add("sell");
+					if ("view".startsWith(args[0]) && player.hasPermission("market"))
+						list.add("view");
 					break;
 
 				case 2:
 					switch (args[0]) {
 						case "buy":
-							if (player.hasPermission("market.buy")) displayItems.accept(args[1]);
+							if (player.hasPermission("market.buy"))
+								displayItems.accept(args[1]);
 							break;
 
 						case "config":
-							if ("reset".startsWith(args[1]) && player.hasPermission("market.manage")) list.add("reset");
+							if ("reset".startsWith(args[1]) && player.hasPermission("market.manage"))
+								list.add("reset");
 							break;
 
 						case "sell":
-							if (player.hasPermission("market.sell")) displayItems.accept(args[1]);
+							if (player.hasPermission("market.sell"))
+								displayItems.accept(args[1]);
 							break;
 					}
 					break;

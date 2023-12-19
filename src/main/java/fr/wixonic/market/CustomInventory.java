@@ -7,7 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public final class CustomInventory {
@@ -45,7 +48,8 @@ public final class CustomInventory {
 	public static CustomInventory getFor(Player player) {
 		CustomInventory inventory = CustomInventory.inventories.get(player.getUniqueId());
 
-		if (inventory != null) return inventory;
+		if (inventory != null)
+			return inventory;
 		else {
 			inventory = new CustomInventory(player);
 			CustomInventory.inventories.put(player.getUniqueId(), inventory);
@@ -55,15 +59,36 @@ public final class CustomInventory {
 
 	private void display() {
 		this.inventory.clear();
-		
+
 		Runnable categories = () -> {
-			this.inventory.setItem(0, new CustomButton(Material.PAPER, 6, "All items", ChatColor.GRAY + this.count(Main.market.database.getInt("total.buying.requests"), Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(3, new CustomButton(Material.DIAMOND, 7, "Ores & Valuables", ChatColor.GRAY + this.count(Main.market.database.getInt("valuables.buying.requests"), Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(4, new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops", ChatColor.GRAY + this.count(Main.market.database.getInt("mobdrops.buying.requests"), Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(5, new CustomButton(Material.WHEAT, 9, "Farming & Food", ChatColor.GRAY + this.count(Main.market.database.getInt("farming.buying.requests"), Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(6, new CustomButton(Material.MOSSY_STONE_BRICK_STAIRS, 10, "Building Blocks", ChatColor.GRAY + this.count(Main.market.database.getInt("building.buying.requests"), Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(7, new CustomButton(Material.NETHER_STAR, 11, "Special", ChatColor.GRAY + this.count(Main.market.database.getInt("special.buying.requests"), Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
-			this.inventory.setItem(8, new CustomButton(Material.FLINT, 12, "Other", ChatColor.GRAY + this.count(Main.market.database.getInt("other.buying.requests"), Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(0,
+					new CustomButton(Material.PAPER, 6, "All items",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("total.buying.requests"),
+									Main.market.database.getInt("total.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(3,
+					new CustomButton(Material.DIAMOND, 7, "Ores & Valuables",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("valuables.buying.requests"),
+									Main.market.database.getInt("valuables.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(4,
+					new CustomButton(Material.BLAZE_ROD, 8, "Mobdrops",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("mobdrops.buying.requests"),
+									Main.market.database.getInt("mobdrops.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(5,
+					new CustomButton(Material.WHEAT, 9, "Farming & Food",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("farming.buying.requests"),
+									Main.market.database.getInt("farming.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(6,
+					new CustomButton(Material.MOSS, 10, "Building Blocks",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("building.buying.requests"),
+									Main.market.database.getInt("building.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(7,
+					new CustomButton(Material.NETHER_STAR, 11, "Special",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("special.buying.requests"),
+									Main.market.database.getInt("special.selling.requests"), "request")).itemStack);
+			this.inventory.setItem(8,
+					new CustomButton(Material.FLINT, 12, "Other",
+							ChatColor.GRAY + this.count(Main.market.database.getInt("other.buying.requests"),
+									Main.market.database.getInt("other.selling.requests"), "request")).itemStack);
 		};
 
 		Consumer<String> itemList = (String category) -> {
@@ -73,13 +98,15 @@ public final class CustomInventory {
 			this.pageManager.put("current", Math.min(this.pageManager.get("current"), this.pageManager.get("max")));
 
 			try {
-				List<Material> sublist = list.subList((this.pageManager.get("current") - 1) * 36, Math.min(this.pageManager.get("current") * 36, list.size()));
+				List<Material> sublist = list.subList((this.pageManager.get("current") - 1) * 36,
+						Math.min(this.pageManager.get("current") * 36, list.size()));
 
 				for (int x = 0; x < sublist.size(); ++x) {
 					this.inventory.setItem(x + 9, new CustomButton(sublist.get(x), 13).itemStack);
 				}
 			} catch (RuntimeException e) {
-				Main.getInstance().getLogger().warning("Failed to display item list for " + player.getName() + ": " + e);
+				Main.getInstance().getLogger()
+						.warning("Failed to display item list for " + player.getName() + ": " + e);
 			}
 		};
 
@@ -104,9 +131,9 @@ public final class CustomInventory {
 			itemList.accept(this.current);
 		} else {
 			Material item = Material.getMaterial(this.current);
-			
+
 			this.inventory.setItem(4, new CustomButton(item, -1).itemStack);
-			
+
 			this.pageManager.put("current", 1);
 			this.title = ItemManager.getNameFor(item.name()) != null ? ItemManager.getNameFor(item.name()) : "Unknown";
 		}
@@ -117,7 +144,8 @@ public final class CustomInventory {
 			this.inventory.setItem(45, new CustomButton(CustomSkull.presets.get("leftArrow"), 0, "Back").itemStack);
 
 		if (this.pageManager.get("current") > 2)
-			this.inventory.setItem(47, new CustomButton(CustomSkull.presets.get("doubleBackward"), 1, "First").itemStack);
+			this.inventory.setItem(47,
+					new CustomButton(CustomSkull.presets.get("doubleBackward"), 1, "First").itemStack);
 		if (this.pageManager.get("current") > 1)
 			this.inventory.setItem(48, new CustomButton(CustomSkull.presets.get("backward"), 2, "Previous").itemStack);
 
@@ -129,13 +157,18 @@ public final class CustomInventory {
 		if (this.pageManager.get("current") < this.pageManager.get("max") - 1)
 			this.inventory.setItem(51, new CustomButton(CustomSkull.presets.get("doubleForward"), 5, "Last").itemStack);
 
-		this.inventory.setItem(53, new CustomButton(Material.BOOK, -1, "About", Main.getInstance().getDescription().getName() + " v" + Main.getInstance().getDescription().getVersion()).itemStack);
+		this.inventory.setItem(53,
+				new CustomButton(Material.BOOK, -1, "About", Main.getInstance().getDescription().getName() + " v"
+						+ Main.getInstance().getDescription().getVersion()).itemStack);
 
 		try {
 			if (this.history.size() > 1) {
 				String previousID = this.history.get(this.history.size() - 2);
-				this.title = CustomInventory.index.getOrDefault(previousID, (ItemManager.getNameFor(previousID) != null ? ItemManager.getNameFor(previousID) : "Unknown")) + " → " + CustomInventory.index.getOrDefault(this.current, this.title);
-			} else this.title = CustomInventory.index.getOrDefault(this.current, this.title);
+				this.title = CustomInventory.index.getOrDefault(previousID,
+						(ItemManager.getNameFor(previousID) != null ? ItemManager.getNameFor(previousID) : "Unknown"))
+						+ " → " + CustomInventory.index.getOrDefault(this.current, this.title);
+			} else
+				this.title = CustomInventory.index.getOrDefault(this.current, this.title);
 		} catch (Exception e) {
 			Bukkit.getLogger().warning(e.getMessage());
 			this.title = "Error";
@@ -152,7 +185,10 @@ public final class CustomInventory {
 	}
 
 	public String getTitle() {
-		return (this.title + (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1) + "/" + this.pageManager.getOrDefault("max", 1) + ")" : "")).replaceAll("\\@player", player.getName());
+		return (this.title
+				+ (this.pageManager.getOrDefault("max", 1) > 1 ? " (" + this.pageManager.getOrDefault("current", 1)
+						+ "/" + this.pageManager.getOrDefault("max", 1) + ")" : ""))
+				.replaceAll("\\@player", player.getName());
 	}
 
 	public void navigateTo(String name) {
@@ -192,7 +228,8 @@ public final class CustomInventory {
 
 	public String count(int buying, int selling, String type) {
 		if (buying > 0 && selling > 0) {
-			return (buying + selling) + " " + type + "s - " + count(buying, 0, "buying " + type) + ", " + count(0, selling, "selling " + type);
+			return (buying + selling) + " " + type + "s - " + count(buying, 0, "buying " + type) + ", "
+					+ count(0, selling, "selling " + type);
 		} else if (buying > 0) {
 			return buying > 1 ? buying + type + "s" : "One " + type;
 		} else if (selling > 0) {

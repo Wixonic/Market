@@ -6,7 +6,9 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class Database extends ConfigurationManager {
 	public final static Map<String, List<String>> compatibilityTable = new HashMap<>();
@@ -41,10 +43,11 @@ public final class Database extends ConfigurationManager {
 	public void load() throws IOException, ParseException, RuntimeException {
 		Main.getInstance().getLogger().info("Loading database from " + Database.location.toString());
 		YamlConfiguration.loadConfiguration(Database.location.toFile());
-		
+
 		List<String> compatibilityTable = Database.compatibilityTable.get(this.getString("version"));
 		if (compatibilityTable == null || !compatibilityTable.contains(Database.latestVersion)) {
-			Main.getInstance().getLogger().severe("Invalid database version, please refer to the wiki (https://github.com/Wixonic/Market/wiki/Database-Compatibility)");
+			Main.getInstance().getLogger().severe(
+					"Invalid database version, please refer to the wiki (https://github.com/Wixonic/Market/wiki/Database-Compatibility)");
 			Bukkit.getServer().getPluginManager().disablePlugin(Main.getInstance());
 		}
 	}
@@ -53,7 +56,8 @@ public final class Database extends ConfigurationManager {
 		try {
 			this.config.save(Database.location.toFile());
 		} catch (IOException e) {
-			Main.getInstance().getLogger().warning("Failed to save database to " + Database.location.toString() + " - " + e);
+			Main.getInstance().getLogger()
+					.warning("Failed to save database to " + Database.location.toString() + " - " + e);
 		}
 	}
 }
